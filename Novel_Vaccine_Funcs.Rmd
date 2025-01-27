@@ -1,0 +1,95 @@
+---
+title: "Novel_Vaccine_Funcs"
+author: "K. Anderson"
+date: "2025-01-27"
+output: html_document
+---
+
+Created from organization of "NovelVaccineFuns_B.R"
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Input ranges
+
+```{r input range}
+SumOfPostitives = c(0:8)
+SumOfInfected = c(0:8)
+SumOfVaccinated = c(0:8)
+```
+
+## Vaccination Probabilities
+
+### Functions for vaccination probability based on surrounding vaccinated individuals (V+)
+```{r}
+#Prob. of vaccinating if confident (A+) but hold novelty (B-) bias
+topnov = 0.99 - 0.5/(1+ exp(-13*((SumOfVaccinated/8)-0.5))) #A+ Prob of vacc Nov
+#Prob. of vaccinating if confident (A+) but hold conformity (B+) bias
+topconfm = 0.5+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5))) #A+ Prob of vacc Conform
+#Prob. of vaccinating if confident (A+) but hold neutral (B0) bias
+neut_conf_vacc = 0.05*(SumOfVaccinated) + 0.55 #(12/04/24)
+
+#Prob. of vaccinating if hesitant (A-) but hold novelty (B-) bias
+botnov = 0.5 - 0.5/(1+ exp(-13*((SumOfVaccinated/8)-0.5))) #A- Prob of vacc Nov
+#Prob. of vaccinating if hesitant (A-) but hold conformity (B+) bias
+botconfm = 0.002+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))#A- Prob of vacc conform
+#Prob. of vaccinating if hesitant (A-) but hold neutral (B0) bias
+neut_hes_vacc = 0.05*(SumOfVaccinated) + 0.05
+
+```
+
+### Vaccination by Vaccination Plots
+
+```{r, echo=FALSE}
+plot(SumOfVaccinated, topnov, type = "o", col = "red",lwd=2, ylim = 0:1, xlab="Number of V+", ylab = "Vaccination Probability")#A+
+lines(SumOfVaccinated, botnov, type = "o", col = "red", lty=2, lwd=2)
+lines(SumOfVaccinated, neut_conf_vacc, type = "o", lwd=2)
+
+lines(SumOfVaccinated,topconfm , type = "o", col = "blue", lwd=2)
+lines(SumOfVaccinated, botconfm, type = "o", col = "blue", lty=2, lwd=2)
+lines(SumOfVaccinated, neut_hes_vacc, type = "o", lty=2, lwd=2)
+```
+
+### Functions for vaccination probability based on surrounding infected individuals (D+)
+
+```{r}
+#Probability of Vaccinating if confident
+pm3 =  (1.01 - exp(-0.35* SumOfInfected))/2 + 0.5
+#Probability of Vaccinating if hesitant
+pn3 = (1.2 - exp(-0.35* SumOfInfected))/2 + 0.1
+```
+
+### Vaccination by Infected Plots
+
+```{r, echo=FALSE}
+plot(SumOfInfected, pm3, type = "o", col = "black", lwd=2, ylim = 0:1, xlab="Number of (D+)", ylab = "Prob of Vaccination(2)")#A+
+lines(SumOfInfected, pn3, type = "o", col = "green", lwd=2)#A-
+legend("topleft", c("A+", "A-"), fill = c("black", "green"))
+
+```
+
+## Attitude Transition Probabilities
+
+Probability of attitude transition if 
+
+```{r}
+#Confident conform
+pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
+#confident novel
+px3 = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5)))) 
+#
+neut_conf_trans2 = 0.003125*SumOfPostitives^2 - 0.0875*SumOfPostitives + 0.8
+neut_conf_trans = -0.0003125*(SumOfVaccinated)^2 - 0.12125*SumOfVaccinated + 0.99
+neut_conf_trans2 = 0.1125*(SumOfVaccinated) + 0.05 #Change in main code
+```
+
+```{r}
+plot(SumOfPostitives, px3, type= "o", col = "red",lwd=2, ylim = 0:1,xlab = "Number of (A+)", ylab = "Prob. of Change (A+)")#novelty
+#lines(SumOfPostitives, rep(py3,length(SumOfPostitives)), type = "o", lwd=2)#neutral
+#lines(SumOfVaccinated, neut_conf_trans, type = "o", lwd=2)#neutral 8/14
+lines(SumOfVaccinated, neut_conf_trans2, type = "o", lwd=2)#neutral 8/14 poly
+lines(SumOfPostitives, pz3, type = "o", col = "blue", lwd=2)#conform
+legend("top", c("conform", "neutral", "novelty"), fill = c("blue","black", "red"))
+```
+

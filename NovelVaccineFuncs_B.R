@@ -7,7 +7,7 @@ SumOfVaccinated = c(0:8)
 
 #if agent holds novelty bias
 px = exp(-4*(1-(SumOfPostitives/8)))#prob_of_change
-px3 = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5))))
+px3 = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5))))#***
 
 
 #if neutral bias
@@ -69,7 +69,8 @@ botconfm = 0.002+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))#A- Prob of vacc c
 
 #8/14/23
 neut_conf_trans = -0.0003125*(SumOfVaccinated)^2 - 0.12125*SumOfVaccinated + 0.99
-neut_conf_trans2 = 0.003125*(SumOfVaccinated)^2 - 0.0875*SumOfVaccinated + 0.8
+neut_conf_trans2 = 0.003125*(SumOfVaccinated)^2 - 0.0875*SumOfVaccinated + 0.8#*** Probably supposed to be SumOfPoss
+#neut_conf_trans2 = 0.1125*(SumOfVaccinated) + 0.05 #Change in main code 1/27/25
 
 neut_hes_trans = -0.0003125*(SumOfVaccinated)^2 + 0.12625*SumOfVaccinated
 neut_hes_trans2 = 0.003125*(SumOfVaccinated)^2 + 0.0375*SumOfVaccinated + 0.3
