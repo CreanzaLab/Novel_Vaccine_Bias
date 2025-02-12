@@ -77,7 +77,7 @@ NumTimesteps = 100 #Number of timesteps
 #Population size and homophily specification
 sizei <-40
 sizej <-25
-Homophily <- 1 #==1 if homophily biases movements; 0 if random movements
+Homophily <- 1 #==1 if attitude homophily biases movements; 0 if random movements
 
 runend = 10 #Number of runs
 

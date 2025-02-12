@@ -19,12 +19,11 @@ py3 = 0.5
 pz = exp(-4*((SumOfPostitives/8)))
 pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
 
-
 ###prob of attitude change. if Hesitant###
 
 #if agent holds novelty bias
 pp = exp(-4*(SumOfPostitives/8))#
-pp3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
+pp3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5))) #same as pz3
 pp2 = (exp(-4*(SumOfPostitives/8)))/2# Used for prob of Vacc
 
 

@@ -40,9 +40,8 @@ neut_hes_vacc = 0.05*(SumOfVaccinated) + 0.05
 ```
 
 ### Vaccination by Vaccination Plots
-
 ```{r, echo=FALSE}
-plot(SumOfVaccinated, topnov, type = "o", col = "red",lwd=2, ylim = 0:1, xlab="Number of V+", ylab = "Vaccination Probability")#A+
+plot(SumOfVaccinated, topnov, type = "o", col = "red",lwd=2, ylim = 0:1, xlab="Number of Surrounding Vaccinated (V+)", ylab = "Vaccination Probability")#A+
 lines(SumOfVaccinated, botnov, type = "o", col = "red", lty=2, lwd=2)
 lines(SumOfVaccinated, neut_conf_vacc, type = "o", lwd=2)
 
@@ -52,7 +51,6 @@ lines(SumOfVaccinated, neut_hes_vacc, type = "o", lty=2, lwd=2)
 ```
 
 ### Functions for vaccination probability based on surrounding infected individuals (D+)
-
 ```{r}
 #Probability of Vaccinating if confident
 pm3 =  (1.01 - exp(-0.35* SumOfInfected))/2 + 0.5
@@ -61,9 +59,8 @@ pn3 = (1.2 - exp(-0.35* SumOfInfected))/2 + 0.1
 ```
 
 ### Vaccination by Infected Plots
-
 ```{r, echo=FALSE}
-plot(SumOfInfected, pm3, type = "o", col = "black", lwd=2, ylim = 0:1, xlab="Number of (D+)", ylab = "Prob of Vaccination(2)")#A+
+plot(SumOfInfected, pm3, type = "o", col = "black", lwd=2, ylim = 0:1, xlab="Number of Surrounding Infected (D+)", ylab = "Vaccination Probability")#A+
 lines(SumOfInfected, pn3, type = "o", col = "green", lwd=2)#A-
 legend("topleft", c("A+", "A-"), fill = c("black", "green"))
 
@@ -71,25 +68,47 @@ legend("topleft", c("A+", "A-"), fill = c("black", "green"))
 
 ## Attitude Transition Probabilities
 
-Probability of attitude transition if 
-
+### Functions for attitude transition probability based on surrounding confident individuals (A+)
+#### Confident
 ```{r}
-#Confident conform
+#Confident conformist bias
 pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
-#confident novel
+#Confident novelty bias
 px3 = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5)))) 
-#
-neut_conf_trans2 = 0.003125*SumOfPostitives^2 - 0.0875*SumOfPostitives + 0.8
-neut_conf_trans = -0.0003125*(SumOfVaccinated)^2 - 0.12125*SumOfVaccinated + 0.99
-neut_conf_trans2 = 0.1125*(SumOfVaccinated) + 0.05 #Change in main code
+#Confident neutral bias
+neut_conf_transb = -0.075*(SumOfPostitives) + 0.8 #Change in code
+
+```
+### Transition if Confident Plot
+```{r}
+plot(SumOfPostitives, px3, type= "o", col = "red",lwd=2, ylim = 0:1,xlab = "Number of Surrounding Confident (A+)", ylab = "Prob. of Att. Trans. to Hesit. (A+ --> A-)")#novelty
+lines(SumOfVaccinated, neut_conf_transb, type = "o", lwd=2)#neutral 8/14 poly
+lines(SumOfPostitives, pz3, type = "o", col = "blue", lwd=2)#conform
+legend("top", c("Conform", "Neutral", "Novelty"), fill = c("blue","black", "red"))
 ```
 
+#### Hesitant
 ```{r}
-plot(SumOfPostitives, px3, type= "o", col = "red",lwd=2, ylim = 0:1,xlab = "Number of (A+)", ylab = "Prob. of Change (A+)")#novelty
-#lines(SumOfPostitives, rep(py3,length(SumOfPostitives)), type = "o", lwd=2)#neutral
-#lines(SumOfVaccinated, neut_conf_trans, type = "o", lwd=2)#neutral 8/14
-lines(SumOfVaccinated, neut_conf_trans2, type = "o", lwd=2)#neutral 8/14 poly
-lines(SumOfPostitives, pz3, type = "o", col = "blue", lwd=2)#conform
-legend("top", c("conform", "neutral", "novelty"), fill = c("blue","black", "red"))
+#Hesitant conformist bias
+pr3 = 0.002 + 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5))) 
+#Hesitant-Novelty bias
+pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
+#Hesitant-Neutral Bias
+neut_hes_trans2 = 0.003125*(SumOfPostitives)^2 + 0.0375*SumOfPostitives + 0.3
+neut_hes_transb = 0.075*(SumOfPostitives) + 0.2 #Change in code
+
+# neut_conf_trans = -0.0003125*(SumOfVaccinated)^2 - 0.12125*SumOfVaccinated + 0.99
+# neut_conf_trans2 = 0.1125*(SumOfVaccinated) + 0.05 #Change in main code
 ```
+
+### Transition if Hesitant Plot
+```{r}
+
+plot(SumOfPostitives, pz3, type= "o", col = "red",lwd=2, ylim = 0:1, xlab = "Number of Surrounding Confident (A+)", ylab = "Prob. of Att. Trans to Conf. (A- --> A+)")
+lines(SumOfPostitives, neut_hes_transb, type = "o", lwd=2)#neutral 8/14 poly
+lines(SumOfPostitives, pr3, type = "o", col = "blue", lwd=2)
+legend("top", c("Conform", "Neutral", "Novelty"), fill = c("blue","black", "red"))
+
+```
+
 
