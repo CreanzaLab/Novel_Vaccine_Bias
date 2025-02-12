@@ -77,7 +77,7 @@ NumTimesteps = 100 #Number of timesteps
 #Population size and homophily specification
 sizei <-40
 sizej <-25
-Homophily <- 1 #==1 if homophily biases movements; 0 if random movements
+Homophily <- 1 #==1 if attitude homophily biases movements; 0 if random movements
 
 runend = 10 #Number of runs
 
@@ -210,6 +210,7 @@ for (t in 1:NumTimesteps){
     
     for (scan in 1:influencer_conf[2]){#Creates list of influencer_conf followers
       
+      #Chooses agents at random
       follower_conf_i=round(runif(1,1,sizei)) 
       follower_conf_j=round(runif(1,1,sizej))
       
@@ -252,11 +253,11 @@ for (t in 1:NumTimesteps){
     }#if else influencer_hes[2] == 0 
   
   
-##Change attitude state## 
+##Attitude Transition## 
   for (i in 1:sizei){
     for (j in 1:sizej){
       
-     #Checks is an agent is a follower of either or both influencers and assigns name
+     #Checks if an agent is a follower of either or both influencers and assigns name
       in_followers_conf <- any((followers_conf[, 1]== i) * (followers_conf[, 2] == j))
       in_followers_hes <- any((followers_hes[, 1]== i) * (followers_hes[, 2] == j))
       
@@ -268,9 +269,9 @@ for (t in 1:NumTimesteps){
         Individual_matrix[i,startj,2]+Individual_matrix[i,endj,2]+
         Individual_matrix[endi,startj,2]+Individual_matrix[endi,j,2]+Individual_matrix[endi,endj,2]
       
-      #Currently, bias determines switch rate equation  
+      #Bias determines attitude transition probability equation  
       #Cultural Bias index used to assign prob_of_change eqn
-      #Cultural Bias (-1, 0, 1); k = 1, 2 or 3
+      #Cultural Bias: (-1, 0, 1) --> index: k = (1, 2, 3)
       k = match(Individual_matrix[i,j,4], CulturalBias)
       
       kk = 0.14# Weight of Influencer effects
@@ -286,7 +287,7 @@ for (t in 1:NumTimesteps){
         if (k==2){#if neutral bias
           
         
-          prob_of_change = 0.003125*SumOfPostitives^2 - 0.0875*SumOfPostitives + 0.8
+          prob_of_change = -0.075*(SumOfPostitives) + 0.8 #0.003125*SumOfPostitives^2 - 0.0875*SumOfPostitives + 0.8
           
         }
         
@@ -366,7 +367,7 @@ for (t in 1:NumTimesteps){
         
         if (k==2){#if neutral bias
           
-          prob_of_change = 0.003125*SumOfPostitives^2 + 0.0375*SumOfPostitives + 0.3 
+          prob_of_change = 0.075*(SumOfPostitives) + 0.2 #0.003125*SumOfPostitives^2 + 0.0375*SumOfPostitives + 0.3 
         }
         
         if (k==3){ #if conformity bias

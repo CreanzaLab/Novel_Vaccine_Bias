@@ -15,16 +15,18 @@ slopes <-0.5# still some prob of changing to majority, but not as much as confor
 b <-0
 py = slopes*(1-(SumOfPostitives/8)) + b
 py3 = 0.5
+
+
+
 #if conformity bias
 pz = exp(-4*((SumOfPostitives/8)))
 pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
-
 
 ###prob of attitude change. if Hesitant###
 
 #if agent holds novelty bias
 pp = exp(-4*(SumOfPostitives/8))#
-pp3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
+pp3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5))) #same as pz3
 pp2 = (exp(-4*(SumOfPostitives/8)))/2# Used for prob of Vacc
 
 
@@ -71,9 +73,11 @@ botconfm = 0.002+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))#A- Prob of vacc c
 neut_conf_trans = -0.0003125*(SumOfVaccinated)^2 - 0.12125*SumOfVaccinated + 0.99
 neut_conf_trans2 = 0.003125*(SumOfVaccinated)^2 - 0.0875*SumOfVaccinated + 0.8#*** Probably supposed to be SumOfPoss
 #neut_conf_trans2 = 0.1125*(SumOfVaccinated) + 0.05 #Change in main code 1/27/25
+neut_conf_transb = -0.075*(SumOfPostitives) + 0.8 #Changed in code 2/12/25***
 
 neut_hes_trans = -0.0003125*(SumOfVaccinated)^2 + 0.12625*SumOfVaccinated
 neut_hes_trans2 = 0.003125*(SumOfVaccinated)^2 + 0.0375*SumOfVaccinated + 0.3
+neut_hes_transb = 0.075*(SumOfPostitives) + 0.2 #Changed in code 2/12/25***
 
 #neut_conf_vacc = -0.0003125*(SumOfVaccinated)^2 + 0.06375*SumOfVaccinated + 0.5 #***
 #neut_conf_vacc = -0.003125*(SumOfVaccinated)^2 + 0.06375*SumOfVaccinated + 0.55
