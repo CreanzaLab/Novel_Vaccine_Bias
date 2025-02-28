@@ -117,6 +117,7 @@ legend("top", c("Conform", "Neutral", "Novelty"), fill = c("blue","black", "red"
 ```{r}
 x <- seq(0,1, 0.1)
 kk = 0.14
+n=3
 
 #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
 # for (x in seq(0,1, 0.1)){
@@ -126,4 +127,23 @@ kk = 0.14
 # yy <- (1+kk)*x}}
 
 #plot(x, yy = x+kk, type= "o", col = "red",lwd=2)
+
+#Increase prob of change
+yy = kk + (1-kk)*x^n
+
+yy = kk + (1-kk)*x #should work
+
+#decrease prob of change
+
+yy = x- (kk*x) #Probably better to not have n (not mutually scalable)
+
+yy = x*(1-kk^n) #need to adjust n (n = 5 too close to y=x)
+
+yy = x*(1-exp(-n*kk)) #need to adjust n (y too small)
+
+plot(x, yy)
+
+
+
+
 ```
