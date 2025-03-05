@@ -115,35 +115,70 @@ legend("top", c("Conform", "Neutral", "Novelty"), fill = c("blue","black", "red"
 #### Influencer Effects
 
 ```{r}
-x <- seq(0,1, 0.1)
+prob_of_change <- seq(0,1, 0.1)
 kk = 0.14
-n=3
 
 #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
-# for (x in seq(0,1, 0.1)){
-#   if (x == 0) {
-# yy = x + kk} else{
-# 
-# yy <- (1+kk)*x}}
 
-#plot(x, yy = x+kk, type= "o", col = "red",lwd=2)
+#Currently: yy = prob_of_change + kk;  yy <- (1+kk)*(prob_of_change)
+# New: yy = kk + (1-kk)*x^n OR
+yh1 = kk + (1-kk)*prob_of_change #(Change in code; no need for 0 condition)
 
-#Increase prob of change
-yy = kk + (1-kk)*x^n
+# if hesitant agent only follows hesitant --> reduce prob of change by some factor of kk
 
-yy = kk + (1-kk)*x #should work
-
-#decrease prob of change
-
-yy = x- (kk*x) #Probably better to not have n (not mutually scalable)
-
-yy = x*(1-kk^n) #need to adjust n (n = 5 too close to y=x)
-
-yy = x*(1-exp(-n*kk)) #need to adjust n (y too small)
-
-plot(x, yy)
+#Currently: yy <- prob_of_change-kk; yy <- prob_of_change*(1-kk)
+#New:
+yh2 = prob_of_change- (kk*prob_of_change) #(*** Essentially the same. Also no need for 0 condition)
 
 
+#if hesitant agent follows both confident and hesitant ()
+  #-> reduced prob of change but not as much as following only hesitant (incorporates backfire effect)
+
+#Currently: yy <- prob_of_change -kk/2; (1-kk/2)*(prob_of_change)
+#New:
+yh3 = (1-kk/2)*prob_of_change #(*** Essentially the same. Also no need for 0 condition - Keep)
+
+  # OR Prob of change increases, but not as much as if only following confident
+yh3b = kk/2 + (1-kk/2)*prob_of_change
+
+plot(prob_of_change, yh1, type = "o", lwd=2, ylim = 0:1, xlab = "Attitude Transition Probability if Hesitant (A- --> A+)", ylab = "Probability after Influencer Effects")
+lines(prob_of_change, yh2, type = "o", lwd=2, col = "blue")
+lines(prob_of_change, yh3, type = "o", lwd=2, col = "red")
+lines(prob_of_change, yh3b, lty = 2, lwd=2, col = "red")
+title("If Agent is Hesitant...")
+legend("top", c("Following Confident", "Following Hesitant", "Following Both", "Following Both_b"), lty = c(1,1,1,2), col = c("black","blue", "red", "red"))
+
+
+
+#If confident and only following confident --> reduce probability of change by kk
+
+#Currently: yy <- prob_of_change - kk; yy <- prob_of_change*(1-kk)
+#Update:
+yc1 = prob_of_change- (kk*prob_of_change) #(*** Essentially the same. Also no need for 0 condition)
+
+#if confident and only following hesitant -> increase prob of change
+
+#Currently: yy <- prob_of_change + kk; yy <- prob_of_change*(1+kk)
+#Update:
+yc2 = kk + (1-kk)*prob_of_change #(Change in code; no need for 0 condition)
+
+# if confident and following both confident and hesitant 
+    #--> reduce probability of change but not as much only following confident
+   
+#Currently: yy <- prob_of_change - kk/2; yy = (1-kk/2)*(prob_of_change)
+#Update:
+yc3 = (1-kk/2)*prob_of_change #(*** Essentially the same. Also no need for 0 condition -- Keep)
+
+    #OR Prob of change increases, but not as much as if only following hesitant
+yc3b = kk/2 + (1-kk/2)*prob_of_change
+
+
+plot(prob_of_change, yc1, type = "o", lwd=2, ylim = 0:1, xlab = "Attitude Transition Probability if Confident (A+ --> A-)", ylab = "Probability after Influencer Effects")
+lines(prob_of_change, yc2, type = "o", lwd=2, col = "blue")
+lines(prob_of_change, yc3, type = "o", lwd=2, col = "red")
+lines(prob_of_change, yc3b, lty = 2, lwd=2, col = "red")
+title("If Agent is Confident...")
+legend("top", c("Following Confident", "Following Hesitant", "Following Both", "Following Both_b"), lty = c(1,1,1,2), col = c("black","blue", "red", "red"))
 
 
 ```
