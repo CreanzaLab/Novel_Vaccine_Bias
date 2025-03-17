@@ -74,7 +74,8 @@ legend("topleft", c("A+", "A-"), fill = c("black", "green"))
 #Confident novelty bias
 px3 = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5)))) 
 #Confident neutral bias
-neut_conf_transb = -0.075*(SumOfPostitives) + 0.8 #Change in code
+neut_conf_transb = -0.075*(SumOfPostitives) + 0.8
+#0.003125*SumOfPostitives^2 - 0.0875*SumOfPostitives + 0.8
 #Confident conformist bias
 pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
 
@@ -92,7 +93,8 @@ legend("top", c("Conform", "Neutral", "Novelty"), fill = c("blue","black", "red"
 #Hesitant-Novelty bias
 pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
 #Hesitant-Neutral Bias
-neut_hes_transb = 0.075*(SumOfPostitives) + 0.2 #Change in code
+neut_hes_transb = 0.075*(SumOfPostitives) + 0.2
+#0.003125*SumOfPostitives^2 + 0.0375*SumOfPostitives + 0.3
 #Hesitant conformist bias
 pr3 = 0.002 + 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5))) 
 

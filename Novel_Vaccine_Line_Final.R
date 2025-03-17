@@ -42,8 +42,8 @@ library(magick)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-library(gganimate)
-library(corrplot)
+# library(gganimate)
+# library(corrplot)
 
 set.seed(1112)
 source('Novel_Vaccine_Vars_Final.R') #Script creating bias combination list
@@ -62,7 +62,7 @@ dir_out_pdf <- "NovelVaccineOutPdf"
 Vars = template_list # List of parameters combinations, varying by bias, used for testing
 
 #pdf
-outname <- paste("Line_Plots_Homophily=1_Move=10")
+outname <- paste("LinePlots_Final_Homophily=1_Move=10(2025)")
 pdf(file.path(dir_out_pdf,paste0(outname,".pdf")), height=9, width=12)
 par(mfrow=c(2,2))
 
@@ -287,7 +287,7 @@ for (t in 1:NumTimesteps){
         if (k==2){#if neutral bias
           
         
-          prob_of_change = -0.075*(SumOfPostitives) + 0.8 #0.003125*SumOfPostitives^2 - 0.0875*SumOfPostitives + 0.8
+          prob_of_change = -0.075*(SumOfPostitives) + 0.8
           
         }
         
@@ -301,43 +301,44 @@ for (t in 1:NumTimesteps){
        #If confident and only following confident --> reduce probability of change by kk
         if (in_followers_conf ==TRUE & in_followers_hes == FALSE){
           
-          if (prob_of_change == 0){ # If initial prob of change is zero use
-            
-            yy <- prob_of_change - kk 
-            
-          } else {
+          # if (prob_of_change == 0){ # If initial prob of change is zero use
+          #   
+          #   yy <- prob_of_change - kk 
+          #   
+          # } else {
             
             yy <- prob_of_change*(1-kk)
             
-                 } 
+                # } 
         }
         
         #if confident and only following hesitant -> increase prob of change
         if (in_followers_conf ==FALSE & in_followers_hes == TRUE){
           
-          if (prob_of_change == 0){ # If initial prob of change is zero use...
+          # if (prob_of_change == 0){ # If initial prob of change is zero use...
+          #   
+          #   yy <- prob_of_change + kk 
+          #   
+          # } else {
             
-            yy <- prob_of_change + kk 
-            
-          } else {
-            
-            yy <- prob_of_change*(1+kk)
-          }
+            #yy <- prob_of_change*(1+kk)
+            yy <- kk + (1-kk)*prob_of_change #3/17/25
+          #}
          
         }
         
         #  if confident and following both confident and hesitant --> reduce probability of change
         if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
           
-          if (prob_of_change == 0){ # If initial prob of change is zero use
-            
-            yy <- prob_of_change - kk/2 
-            
-          } else { 
+          # if (prob_of_change == 0){ # If initial prob of change is zero use
+          #   
+          #   yy <- prob_of_change - kk/2 
+          #   
+          # } else { 
             
             yy = (1-kk/2)*(prob_of_change)
             
-           }
+           #}
           
         }
         
@@ -367,7 +368,7 @@ for (t in 1:NumTimesteps){
         
         if (k==2){#if neutral bias
           
-          prob_of_change = 0.075*(SumOfPostitives) + 0.2 #0.003125*SumOfPostitives^2 + 0.0375*SumOfPostitives + 0.3 
+          prob_of_change = 0.075*(SumOfPostitives) + 0.2  
         }
         
         if (k==3){ #if conformity bias
@@ -378,41 +379,42 @@ for (t in 1:NumTimesteps){
         #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
         if (in_followers_conf == TRUE & in_followers_hes == FALSE){
           
-          if (prob_of_change == 0){
+          # if (prob_of_change == 0){
+          #   
+          #   yy = prob_of_change + kk 
+          #   
+          #  } else{
             
-            yy = prob_of_change + kk 
+            #yy <- (1+kk)*(prob_of_change)
+            yy <- kk + (1-kk)*prob_of_change #New 3/17/25
             
-           } else{
-            
-            yy <- (1+kk)*(prob_of_change)   
-            
-          } #else end
+          #} #else end
          
         }#If hesitant and... end
         
         # if hesitant agent only follows hesitant
         if (in_followers_conf == FALSE & in_followers_hes == TRUE){
           
-          if(prob_of_change == 0){
-            
-            yy <- prob_of_change-kk
-            
-          }else{
+          # if(prob_of_change == 0){
+          #   
+          #   yy <- prob_of_change-kk
+          #   
+          # }else{
             
             yy <- prob_of_change*(1-kk)
             
-           }
+           #}
         }
         
         #if agent follows both confident and hesitant -> reduced prob of change
         if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
           
-          if(prob_of_change ==0){ #8/17/23
-            yy <- prob_of_change -kk/2} else {
+          # if(prob_of_change ==0){ #8/17/23
+          #   yy <- prob_of_change -kk/2} else {
               
               yy <- (1-kk/2)*(prob_of_change)
               
-             }
+             #}
         }
         
         #if agent follows neither influencer -> no action
