@@ -62,7 +62,7 @@ dir_out_pdf <- "NovelVaccineOutPdf"
 Vars = template_list # List of parameters combinations, varying by bias, used for testing
 
 #pdf
-outname <- paste("LinePlots_Final_Homophily=1_Move=10(2025)")
+outname <- paste("LinePlots_Final_Homophily=0_Move=10(2025)")
 pdf(file.path(dir_out_pdf,paste0(outname,".pdf")), height=9, width=12)
 par(mfrow=c(2,2))
 
@@ -77,7 +77,7 @@ NumTimesteps = 100 #Number of timesteps
 #Population size and homophily specification
 sizei <-40
 sizej <-25
-Homophily <- 1 #==1 if attitude homophily biases movements; 0 if random movements
+Homophily <- 0 #==1 if attitude homophily biases movements; 0 if random movements
 
 runend = 10 #Number of runs
 

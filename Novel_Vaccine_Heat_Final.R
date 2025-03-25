@@ -471,59 +471,53 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       #Cultural Bias (-1, 0, 1); k = 1, 2 or 3
       k = match(Individual_matrix[i,j,4], CulturalBias)
      
-      #kk = 0.14#Vector_A[aw]#0.14 # Weight of Influencer effects #Add Another Vars
+      kk = 0.14#Vector_A[aw]#0.14 # Weight of Influencer effects #Add Another Vars
      
     if(Individual_matrix[i,j,2]==1){#if agent is confident
        
         if (k==1){#if agent holds novelty bias
           
-        #prob_of_change = exp(-4*(1-(SumOfPostitives/8)))# prob of + --> - increases
-        #as number of + increases
-        prob_of_change = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5))))
+          prob_of_change = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5))))
+       
+        
         #
         }
         if (k==2){#if neutral bias
           
-        #   slopes_0 <-0.5 # still some prob of changing to majority, but not as much as conform
-        #   b_0 <-0
-        #   
-        # prob_of_change = slopes_0*(1-(SumOfPostitives/8)) + b_0
-          
-         #prob_of_change = 0.5 #True neutral
-         prob_of_change = 0.003125*SumOfPostitives^2 - 0.0875*SumOfPostitives + 0.8
+          prob_of_change = -0.075*(SumOfPostitives) + 0.8 #3/25/25
          
         }
         
         if (k==3){ #if conformity bias
         
-          #prob_of_change = exp(-4*((SumOfPostitives/8)))
-        prob_of_change = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
+            prob_of_change = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
+        
         }#+ --> - decreases as + increases
      
      
       
   ### Recalculate probability of mind change based on influencer effects
         
-        #if (in_followers_conf & !in_followers_hes){ #If confident and only following confident -> no action
+      #If confident and only following confident --> reduce probability of change by kk
           if (in_followers_conf ==TRUE & in_followers_hes == FALSE){
-          #message("[", i, ",", j, "]conf only")
-            
-            kk = kk_conf
+         
+            #kk = kk_conf
           
-            if (prob_of_change == 0){ # If initial prob of change is zero use...# 8/17/23
-             
-               yy <- prob_of_change - kk #kk_conf
-              
-            } else {
+            # if (prob_of_change == 0){ # If initial prob of change is zero use...# 8/17/23
+            #  
+            #    yy <- prob_of_change - kk #kk_conf
+            #   
+            # } else {
               
               yy <- prob_of_change*(1-kk)
-            
-          #yy <-  prob_of_change
+              
+            #yy <-  prob_of_change
           
-        } #nothing
+        #} #nothing
           }
         
-        #if (!in_followers_conf & in_followers_hes){ #... and only following hesitant -> increase prob of change by some factor determined by kk
+        
+      #if confident and only following hesitant -> increase prob of change
           if (in_followers_conf ==FALSE & in_followers_hes == TRUE){
             
             kk = kk_hes
