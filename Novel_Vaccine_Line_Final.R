@@ -262,7 +262,7 @@ for (t in 1:NumTimesteps){
       in_followers_hes <- any((followers_hes[, 1]== i) * (followers_hes[, 2] == j))
       
     
-  ### Calculate initial probability of changing attitudes for all (i,j)###
+ 
       
       #tally the A+ attitudes around agent  
       SumOfPostitives=Individual_matrix[starti,startj,2]+Individual_matrix[starti,j,2]+Individual_matrix[starti,endj,2]+
@@ -274,8 +274,11 @@ for (t in 1:NumTimesteps){
       #Cultural Bias: (-1, 0, 1) --> index: k = (1, 2, 3)
       k = match(Individual_matrix[i,j,4], CulturalBias)
       
-      kk = 0.14# Weight of Influencer effects
+      kk = 0.14 #Weight of Influencer effects
       
+  ### Calculate initial probability of changing attitudes for all (i,j)###
+ 
+##If agent is Confident     
   if(Individual_matrix[i,j,2]==1){#if agent is confident
         
         
@@ -283,7 +286,8 @@ for (t in 1:NumTimesteps){
           
           prob_of_change = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5))))
           
-        }
+                }
+    
         if (k==2){#if neutral bias
           
         
@@ -296,9 +300,9 @@ for (t in 1:NumTimesteps){
           prob_of_change = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
         }
         
-  ### Recalculate probability of attitude change based on influencer effects
+  ### Recalculate probability of attitude change based on influencer effects ###
         
-       #If confident and only following confident --> reduce probability of change by kk
+    #If confident and only following confident --> reduce probability of change by kk
         if (in_followers_conf ==TRUE & in_followers_hes == FALSE){
           
           # if (prob_of_change == 0){ # If initial prob of change is zero use
@@ -312,7 +316,7 @@ for (t in 1:NumTimesteps){
                 # } 
         }
         
-        #if confident and only following hesitant -> increase prob of change
+    #if confident and only following hesitant -> increase prob of change
         if (in_followers_conf ==FALSE & in_followers_hes == TRUE){
           
           # if (prob_of_change == 0){ # If initial prob of change is zero use...
@@ -323,11 +327,12 @@ for (t in 1:NumTimesteps){
             
             #yy <- prob_of_change*(1+kk)
             yy <- kk + (1-kk)*prob_of_change #3/17/25
+            
           #}
          
         }
         
-        #  if confident and following both confident and hesitant --> reduce probability of change
+    #if confident and following both confident and hesitant --> reduce probability of change
         if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
           
           # if (prob_of_change == 0){ # If initial prob of change is zero use
@@ -342,7 +347,7 @@ for (t in 1:NumTimesteps){
           
         }
         
-        #if following no one -> no action
+    #if following no one -> no action
         if (in_followers_conf == FALSE & in_followers_hes == FALSE){
           
           yy <- prob_of_change
@@ -356,10 +361,12 @@ for (t in 1:NumTimesteps){
           Individual_matrix[i,j,2]= 0
         }
         
-      }#end if confident
+      }#end: if confident
 
-    
-      if (Individual_matrix[i,j,2]==0){#if hesitant
+  ### Calculate initial probability of changing attitudes for all (i,j)###
+      
+##If agent is Hesitant
+  if (Individual_matrix[i,j,2]==0){#if hesitant
         
         if (k==1){#if agent holds novelty bias
           
@@ -376,8 +383,10 @@ for (t in 1:NumTimesteps){
           prob_of_change = 0.002 + 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
         }
         
-        #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
-        if (in_followers_conf == TRUE & in_followers_hes == FALSE){
+    ### Recalculate probability of attitude change based on influencer effects### 
+    
+  #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
+    if (in_followers_conf == TRUE & in_followers_hes == FALSE){
           
           # if (prob_of_change == 0){
           #   

@@ -442,46 +442,38 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       }#if else influencer_hes[2] == 0 
  
   
-##Change attitude state## 
+##Attitude Transition## 
   for (i in 1:sizei){
     for (j in 1:sizej){
       
-      #Put agents into follower lists to for search
-      #8/15/23 Actually, just asking if T or F so these are the answers. seems like it works either way
-  in_followers_conf <- any((followers_conf[, 1]== i) * (followers_conf[, 2] == j))
-  in_followers_hes <- any((followers_hes[, 1]== i) * (followers_hes[, 2] == j))
+      #Checks if an agent is a follower of either or both influencers and assigns name
+       in_followers_conf <- any((followers_conf[, 1]== i) * (followers_conf[, 2] == j))
+       in_followers_hes <- any((followers_hes[, 1]== i) * (followers_hes[, 2] == j))
   
-  # in_followers_conf <- any((followers_conf[, 1]== i) * (followers_conf[, 2] == j))
-  # in_followers_hes <- any((followers_hes[, 1]== i) * (followers_hes[, 2] == j))
   
+       #tally the A+ attitudes around agent  
+        SumOfPostitives=Individual_matrix[starti,startj,2]+Individual_matrix[starti,j,2]+Individual_matrix[starti,endj,2]+
+        Individual_matrix[i,startj,2]+Individual_matrix[i,endj,2]+
+        Individual_matrix[endi,startj,2]+Individual_matrix[endi,j,2]+Individual_matrix[endi,endj,2]
  
-      
-### Calculate initial probability of changing attitudes###
-      
-
- #tally the A+ attitudes around agent  
- SumOfPostitives=Individual_matrix[starti,startj,2]+Individual_matrix[starti,j,2]+Individual_matrix[starti,endj,2]+
-   Individual_matrix[i,startj,2]+Individual_matrix[i,endj,2]+
-   Individual_matrix[endi,startj,2]+Individual_matrix[endi,j,2]+Individual_matrix[endi,endj,2]
- 
- 
-     
- #Currently, bias determines switch rate equation  
+      #Bias determines attitude transition probability equation  
       #Cultural Bias index used to assign prob_of_change eqn
       #Cultural Bias (-1, 0, 1); k = 1, 2 or 3
       k = match(Individual_matrix[i,j,4], CulturalBias)
      
-      kk = 0.14#Vector_A[aw]#0.14 # Weight of Influencer effects #Add Another Vars
-     
-    if(Individual_matrix[i,j,2]==1){#if agent is confident
+      kk = 0.14  #Weight of Influencer effects #Vector_A[aw]
+   
+     ### Calculate initial probability of changing attitudes for all (i,j)###
+        
+##If agent is Confident     
+  if(Individual_matrix[i,j,2]==1){#if agent is confident
        
         if (k==1){#if agent holds novelty bias
           
           prob_of_change = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5))))
        
-        
-        #
         }
+      
         if (k==2){#if neutral bias
           
           prob_of_change = -0.075*(SumOfPostitives) + 0.8 #3/25/25
@@ -492,10 +484,8 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
         
             prob_of_change = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
         
-        }#+ --> - decreases as + increases
+        }
      
-     
-      
   ### Recalculate probability of mind change based on influencer effects
         
       #If confident and only following confident --> reduce probability of change by kk
@@ -520,58 +510,50 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       #if confident and only following hesitant -> increase prob of change
           if (in_followers_conf ==FALSE & in_followers_hes == TRUE){
             
-            kk = kk_hes
+            #kk = kk_hes
               
-              if (prob_of_change == 0){ # If initial prob of change is zero use...
+              # if (prob_of_change == 0){ # If initial prob of change is zero use...
+              #   
+              #   #yy <- prob_of_change + kk/10
+              #   
+              #   yy <- prob_of_change + kk # 8/17/23 #kk_hes
+              # 
+              # } else {
                 
-                #yy <- prob_of_change + kk/10
-                
-                yy <- prob_of_change + kk # 8/17/23 #kk_hes
- 
-              } else {
-                
-                yy <- prob_of_change*(1+kk) #8/17/23
+                #yy <- prob_of_change*(1+kk) #8/17/23
+            
+                yy <- kk + (1-kk)*prob_of_change #3/17/25
               
-              # factor = kk*(1-prob_of_change)**2 + 1
-              # yy = prob_of_change * factor
+             # }
                
-              # yy <- (1+kk)*(prob_of_change) #6/27/23
-        }
-               #prob_of_change <- yy
-         # message("[", i, ",", j, "] hes only")
         }
         
-      #  if (in_followers_conf & in_followers_hes){# ...and following both confident and hesitant
+      #if confident and following both confident and hesitant --> reduce probability of change
           if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
           #yy = prob_of_change/(1+(prob_of_change*kk/10)) #reduced prob of change
             
-            kk = sum(kk_hes, kk_conf)/2
+            #kk = sum(kk_hes, kk_conf)/2
           
-            if (prob_of_change == 0){ # If initial prob of change is zero use...# 8/17/23
+            # if (prob_of_change == 0){ # If initial prob of change is zero use...# 8/17/23
+            #   
+            #       yy <- prob_of_change - kk/2 
+            #   
+            # } else { 
               
-                  yy <- prob_of_change - kk/2 
+              yy = (1-kk/2)*(prob_of_change) #8/17/23 same as 3/17
               
-            } else { 
               
-              yy = (1-kk/2)*(prob_of_change) #8/17/23
-            
-          #yy = (1-kk)*(prob_of_change)#6/27/23
-          #prob_of_change <- yy
-          
-          #message("[", i, ",", j, "] both")
-            }
+           # }
             
           }
         
-        #if (!in_followers_conf & !in_followers_hes){# following no one -> no action
+      #if following no one -> no action
           if (in_followers_conf == FALSE & in_followers_hes == FALSE){
-           #message("[", i, ",", j, "] neither")
+          
               yy <- prob_of_change
         } 
        
-        # print(prob_of_change)
-       
-         ##adding stochasticity 
+       ##adding stochasticity 
        individual_prob=runif(1)
        
            if(individual_prob < yy){ #<prob_of_change
@@ -579,59 +561,55 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
           Individual_matrix[i,j,2]= 0
         }
       
-      }#end if confident
+      }#end: if confident
       
+  ### Calculate initial probability of changing attitudes for all (i,j)###      
       
+##If agent is Hesitant    
     if (Individual_matrix[i,j,2]==0){#if hesitant
-        #calculate inital prob of change based on surrounding atttitudes
-       
+        
         if (k==1){#if agent holds novelty bias
-        #prob_of_change = exp(-4*(SumOfPostitives/8))
-        prob_of_change = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
+          
+           prob_of_change = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
         }
         
         if (k==2){#if neutral bias
           
-        #   slopes_1 <-0.5
-        #   b_1 <-0
-        #   
-        # prob_of_change = slopes_1*(SumOfPostitives/8) + b_1
-        
-          #prob_of_change = 0.5 #True neutral
-          
-          prob_of_change = 0.003125*SumOfPostitives^2 + 0.0375*SumOfPostitives + 0.3 #True neutral 8/14/23
+          prob_of_change = 0.075*(SumOfPostitives) + 0.2 #3/25/25
+          #prob_of_change = 0.003125*SumOfPostitives^2 + 0.0375*SumOfPostitives + 0.3 #True neutral 8/14/23
         }
         
         if (k==3){ #if conformity bias
-        #prob_of_change = exp(-4*(1-(SumOfPostitives/8)))
+        
         prob_of_change = 0.002 + 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
         }
-        # print(c(i,j)) 
-        # print(prob_of_change)
       
-
-        #if (in_followers_conf & !in_followers_hes){# hesitant and only following confident -> increase prob of change by some factor determined by kk
-          if (in_followers_conf == TRUE & in_followers_hes == FALSE){
+      ### Recalculate probability of mind change based on influencer effects
+      
+  #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
+        if (in_followers_conf == TRUE & in_followers_hes == FALSE){
           
-            kk = kk_conf
+            #kk = kk_conf
             
-            if (prob_of_change == 0){
-                
-              yy = prob_of_change + kk #8/17/23
-              
-                   #yy = prob_of_change + kk/10
-                    } else{
+            # if (prob_of_change == 0){
+            #     
+            #   yy = prob_of_change + kk #8/17/23
+            #   
+            #        #yy = prob_of_change + kk/10
+            #         } else{
                       
             # factor = kk*(1-prob_of_change)**2 + 1
             #   yy = prob_of_change * factor
              
-               yy <- (1+kk)*(prob_of_change) #6/27/23 and 8/17/23  
+               #yy <- (1+kk)*(prob_of_change) #6/27/23 and 8/17/23
+          
+               yy <- kk + (1-kk)*prob_of_change #New 3/17/25
               
-                    }
-                  #prob_of_change <- yy
-              #message("[", i, ",", j, "]conf only")
+                   # }
+        
                   }
 
+      
        # if (!in_followers_conf & in_followers_hes){#... and only following hes -> no action
           if (in_followers_conf == FALSE & in_followers_hes == TRUE){
           
