@@ -667,21 +667,16 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
 # }#if else
       
       
-##Probability that agent[i,j] gets vaccinated##
+###Probability that agent[i,j] gets vaccinated###
 ##Based on surrounding infected and vaccinated, attitude and bias
  
-      #tally the infected around agent   
-      # SumOfInfected=Individual_matrix[starti,startj,3]+Individual_matrix[starti,j,3]+Individual_matrix[starti,endj,3]+
-      #   Individual_matrix[i,startj,3]+Individual_matrix[i,endj,3]+
-      #   Individual_matrix[endi,startj,3]+Individual_matrix[endi,j,3]+Individual_matrix[endi,endj,3]
-
+      #Summing the number if infected individuals surrounding an agent
       infected_list <- c(Individual_matrix[starti,startj,3], Individual_matrix[starti,j,3], Individual_matrix[starti,endj,3],
       Individual_matrix[i,startj,3], Individual_matrix[i,endj,3], Individual_matrix[endi,startj,3], Individual_matrix[endi,j,3], Individual_matrix[endi,endj,3])
       
       SumOfInfected = sum(infected_list[infected_list>0])
-      # print(infected_list)
-      # print(SumOfInfected)
       
+      #Summing the number of vaccinated individuals surrounding the agent
       SumOfVaccinated=Individual_matrix[starti,startj,1]+Individual_matrix[starti,j,1]+Individual_matrix[starti,endj,1]+
         Individual_matrix[i,startj,1]+Individual_matrix[i,endj,1]+
         Individual_matrix[endi,startj,1]+Individual_matrix[endi,j,1]+Individual_matrix[endi,endj,1]

@@ -42,8 +42,8 @@ library(magick)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-# library(gganimate)
-# library(corrplot)
+library(gridExtra)
+library(grid)
 
 set.seed(1112)
 source('Novel_Vaccine_Vars_Final.R') #Script creating bias combination list
@@ -61,23 +61,15 @@ dir_out_pdf <- "NovelVaccineOutPdf"
 
 Vars = template_list # List of parameters combinations, varying by bias, used for testing
 
-#pdf
-outname <- paste("LinePlots_Final_Homophily=0_Move=10(2025)")
-pdf(file.path(dir_out_pdf,paste0(outname,".pdf")), height=9, width=12)
-par(mfrow=c(2,2))
-
-# dir_out <- file.path()
-# #dir.create(dir_out, recursive = TRUE)
-# dir_out_pdf <- file.path()
-# #dir.create(dir_out_pdf, recursive = TRUE)
-
 
 NumTimesteps = 100 #Number of timesteps 
 
 #Population size and homophily specification
 sizei <-40
 sizej <-25
-Homophily <- 0 #==1 if attitude homophily biases movements; 0 if random movements
+
+Homophily <- 1 #==1 if attitude homophily biases movements; 0 if random movements
+per_move = 10 #percent of population relocating
 
 runend = 10 #Number of runs
 
@@ -86,6 +78,18 @@ modelvs = array(data = 0, dim = c(length(Vars),3))# Initialized Matrix [Bias dis
 new_ATT_run_avg = array(data = 0, dim = c(length(Vars),23))#Initialized array for collection of every 10 simulated average confidence data points for comparison to CDC data.
 
 diff_new_ATT = array(data = 0, c(length(Vars),2)) #Matrix of [Bias distribution ID, abs(difference between the simulated and CDC vaccine confidence frequencies)]
+
+
+#pdf
+outname <- paste("LinePlots_Final_Homophily=", Homophily, "_Move=", per_move, "(2025)")
+#paste("LinePlots_Final_Homophily=0_Move=10(2025)") #paste("Test")
+pdf(file.path(dir_out_pdf,paste0(outname,".pdf")), height=9, width=12)
+par(mfrow=c(2,2))
+
+# dir_out <- file.path()
+# #dir.create(dir_out, recursive = TRUE)
+# dir_out_pdf <- file.path()
+# #dir.create(dir_out_pdf, recursive = TRUE)
 
 
 # Simulation
@@ -305,47 +309,23 @@ for (t in 1:NumTimesteps){
     #If confident and only following confident --> reduce probability of change by kk
         if (in_followers_conf ==TRUE & in_followers_hes == FALSE){
           
-          # if (prob_of_change == 0){ # If initial prob of change is zero use
-          #   
-          #   yy <- prob_of_change - kk 
-          #   
-          # } else {
-            
-            yy <- prob_of_change*(1-kk)
-            
-                # } 
+           yy <- prob_of_change*(1-kk)
         }
         
     #if confident and only following hesitant -> increase prob of change
         if (in_followers_conf ==FALSE & in_followers_hes == TRUE){
           
-          # if (prob_of_change == 0){ # If initial prob of change is zero use...
-          #   
-          #   yy <- prob_of_change + kk 
-          #   
-          # } else {
-            
-            #yy <- prob_of_change*(1+kk)
-            yy <- kk + (1-kk)*prob_of_change #3/17/25
-            
-          #}
+          
+            yy <- kk + (1-kk)*prob_of_change
          
         }
         
     #if confident and following both confident and hesitant --> reduce probability of change
         if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
           
-          # if (prob_of_change == 0){ # If initial prob of change is zero use
-          #   
-          #   yy <- prob_of_change - kk/2 
-          #   
-          # } else { 
-            
             yy = (1-kk/2)*(prob_of_change)
             
-           #}
-          
-        }
+          }
         
     #if following no one -> no action
         if (in_followers_conf == FALSE & in_followers_hes == FALSE){
@@ -388,42 +368,22 @@ for (t in 1:NumTimesteps){
   #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
     if (in_followers_conf == TRUE & in_followers_hes == FALSE){
           
-          # if (prob_of_change == 0){
-          #   
-          #   yy = prob_of_change + kk 
-          #   
-          #  } else{
+         yy <- kk + (1-kk)*prob_of_change
             
-            #yy <- (1+kk)*(prob_of_change)
-            yy <- kk + (1-kk)*prob_of_change #New 3/17/25
-            
-          #} #else end
-         
         }#If hesitant and... end
         
-        # if hesitant agent only follows hesitant
-        if (in_followers_conf == FALSE & in_followers_hes == TRUE){
+  # if hesitant agent only follows hesitant
+    if (in_followers_conf == FALSE & in_followers_hes == TRUE){
           
-          # if(prob_of_change == 0){
-          #   
-          #   yy <- prob_of_change-kk
-          #   
-          # }else{
+          yy <- prob_of_change*(1-kk)
             
-            yy <- prob_of_change*(1-kk)
-            
-           #}
         }
         
-        #if agent follows both confident and hesitant -> reduced prob of change
+  # if agent follows both confident and hesitant -> reduced prob of change
         if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
           
-          # if(prob_of_change ==0){ #8/17/23
-          #   yy <- prob_of_change -kk/2} else {
-              
-              yy <- (1-kk/2)*(prob_of_change)
-              
-             #}
+          yy <- (1-kk/2)*(prob_of_change)
+         
         }
         
         #if agent follows neither influencer -> no action
@@ -445,13 +405,13 @@ for (t in 1:NumTimesteps){
   ##Probability that agent[i,j] gets vaccinated##
   ##Based on surrounding infected and vaccinated, attitude and bias
 
-      #Summing the numbering if infected individuals surrounding an agent
+      #Summing the number if infected individuals surrounding an agent
       infected_list <- c(Individual_matrix[starti,startj,3], Individual_matrix[starti,j,3], Individual_matrix[starti,endj,3],
                          Individual_matrix[i,startj,3], Individual_matrix[i,endj,3], Individual_matrix[endi,startj,3], Individual_matrix[endi,j,3], Individual_matrix[endi,endj,3])
       
       SumOfInfected = sum(infected_list[infected_list>0])
      
-      #Summing the number of vaccinated indivisuals surrounding the agent
+      #Summing the number of vaccinated individuals surrounding the agent
       SumOfVaccinated=Individual_matrix[starti,startj,1]+Individual_matrix[starti,j,1]+Individual_matrix[starti,endj,1]+
         Individual_matrix[i,startj,1]+Individual_matrix[i,endj,1]+
         Individual_matrix[endi,startj,1]+Individual_matrix[endi,j,1]+Individual_matrix[endi,endj,1]
@@ -471,7 +431,7 @@ for (t in 1:NumTimesteps){
           
           if (k==2){#if neutral bias
             
-            prob_of_vacc2 = -0.0003125*(SumOfVaccinated)^2 + 0.06375*SumOfVaccinated + 0.5
+            prob_of_vacc2 = 0.05*(SumOfVaccinated) + 0.55
           }
           
           if (k==3){ #if conformity bias
@@ -479,12 +439,12 @@ for (t in 1:NumTimesteps){
             prob_of_vacc2 = 0.5+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))
           }
           
-        }
+        } #end if confident
         
         
         if  (Individual_matrix[i,j,2]== 0){#if agent is hesitant
           
-          prob_of_vacc = (1.2 - exp(-0.35* SumOfInfected))/2 + 0.1  #(1.2 - exp(-0.35* SumOfInfected))/2 + 0.1
+          prob_of_vacc = (1.2 - exp(-0.35* SumOfInfected))/2 + 0.1 
           
           if (k==1){#if agent holds novelty bias
             
@@ -493,8 +453,7 @@ for (t in 1:NumTimesteps){
           
           if (k==2){#if neutral bias
             
-           
-            prob_of_vacc2 = 0.003125*(SumOfVaccinated)^2 + 0.025*SumOfVaccinated + 0.1
+            prob_of_vacc2 = 0.05*(SumOfVaccinated) + 0.05 
           }
           
           if (k==3){ #if conformity bias
@@ -502,7 +461,7 @@ for (t in 1:NumTimesteps){
             prob_of_vacc2 = 0.002+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))
           }
           
-        }
+        } #end if hesitant
         
        #Calculating final probability of vaccination for timesteps >15
         if (Individual_matrix[i,j,4] == 0){Comp_prob_of_vacc = (prob_of_vacc*(Prob_of_infect))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}
@@ -600,7 +559,7 @@ for (xx in 1: nrow(Tcontagious)){
  
 
 ##Choose agents to swap positions
-    for (move in 1:round(sizei*sizej/10)){
+    for (move in 1:round(sizei*sizej/per_move)){
     
     #choose random first person
     choosei1=round(runif(1,1,sizei))
@@ -806,17 +765,16 @@ lines(c(0,Time), c(init_tot_infct,DIS_run_avg), type = "l", col = "red", lwd = 2
 #Simulated Recovered
 lines(c(0,Time), c(init_tot_recov,Recov_run_avg), type = "l", col = "orange", lwd = 2)
 #Primary Series of Vaccination
-lines(Time, vacc_data$Percent.of.People.with.Complete.Primary.Series[1:100]/100,type="l", lty=2, lwd = 2)
+lines(Time, vacc_data$Percent.of.People.with.Complete.Primary.Series[1:NumTimesteps]/100,type="l", lty=2, lwd = 2)
 #At least one dose
-lines(Time, vacc_data$Percent.of.Total.Pop.with.at.least.One.Dose[1:100]/100, type="l", lty=3, lwd = 2)
+lines(Time, vacc_data$Percent.of.Total.Pop.with.at.least.One.Dose[1:NumTimesteps]/100, type="l", lty=3, lwd = 2)
 #Surveyed Confidence
 lines(Time[seq(10,NumTimesteps,4)],conf_vector[1:length(new_ATT_run_avg[g,])], type = "l", col = "magenta", lwd = 2 )
 
 
 }#g
 
-
-dev.off()
+### Calculating and indexing minimum difference.
 
 #Printing minimum differences in vaccination and the Vars index
 print(c(min(modelvs[,2]),modelvs[match(min(modelvs[,2]),modelvs[,2]),1], min(modelvs[,3]), modelvs[match(min(modelvs[,3]),modelvs[,3]),1]))
@@ -829,10 +787,32 @@ print(c(min(diff_new_ATT[,2]), diff_new_ATT[match(min(diff_new_ATT[,2]),diff_new
 Bestfits <- cbind(modelvs,diff_new_ATT[,2])
 
 for (ff in 1:length(Vars)){
-  
+
   SumBest[ff] <- sum(Bestfits[ff, 2:4]) #Summing the at least one dose and confidence differences
  }
 
 SumBest2 <- cbind(1:length(Vars), SumBest)#index difference sums
 
 print(c(min(SumBest2[,2]), SumBest2[match(min(SumBest2[,2]),SumBest2[,2]),1]))#print best fit (least difference)
+
+## Collecting calculations and indicies
+  output_text <- c(
+    sprintf("Primary Vaccination: %.3f, %s", min(modelvs[,2]), modelvs[match(min(modelvs[,2]), modelvs[,2]),1]),
+    sprintf("@ Least One Vax: %.3f, %s", min(modelvs[,3]), modelvs[match(min(modelvs[,3]), modelvs[,3]),1]),
+    sprintf("Confidence: %.3f, %s", min(diff_new_ATT[,2]), diff_new_ATT[match(min(diff_new_ATT[,2]), diff_new_ATT[,2]),1]),
+    sprintf("One Dose + Confidence: %.3f, %s", min(SumBest2[,2]), SumBest2[match(min(SumBest2[,2]), SumBest2[,2]),1])
+  )
+ 
+  
+## Printing to .pdf   
+  # Create a new page for the calculation results
+  grid::grid.newpage()
+  grid::grid.text("Summary of Minimum Best Fits", gp = grid::gpar(fontsize = 20), y = 0.9)
+  
+  # Add the output text to the PDF
+  y_positions <- seq(0.8, 0.5, length.out = length(output_text))  # Adjust y positions
+  for (i in 1:length(output_text)) {
+    grid::grid.text(output_text[i], y = y_positions[i])
+  }
+  
+dev.off()  # Close the PDF
