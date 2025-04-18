@@ -97,7 +97,7 @@ for (g in 1:length(Vars)){# Applying each list of parameters varying by bias
 
   print(g) #used for progress tracking
   
-  #Arrays for collecting Confidence, Vaccination, Infected and Recovered frequencies over time
+  #Arrays for collecting Confidence, Vaccination, Infected and Recovered frequencies over time per run
   ATT_run = array(data = 0, dim = c(runend,NumTimesteps))
   ATT_run_avg = array(data = 0, dim = c(1,NumTimesteps))
   

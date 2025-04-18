@@ -91,54 +91,60 @@ par(mfrow=c(2,2))
   matrix_A =array(data=0, dim=c(length(Vector_A),length(Vector_B)))
 
  
-  #aw- y label bw x label
-  for (aw in 1:length(Vector_A)){
-#print(aw)
+  for (aw in 1:length(Vector_A)){ #For graphing: aw- y label bw x label
     for (bw in 1:length(Vector_B)){
-print(c(aw,bw))
-  ## Heatmap tests 1   
+#print(c(aw,bw)) For progress tracking
+  
+  ## Heatmap  Tests  
+      #test_name <- 1 # Probability of Infection vs Vaccinated Infection Probability
        # Prob_of_infect <- Vector_A[aw]
        # Vaccinated_Disease_threshold <- Vector_B[bw]
     
-    # #test_name <- 2
+    # #test_name <- 2 # Hesitancy Influencer (Trait) vs Confident Influencer (Trait)
        # influencer_hes <- c(0,round(Vector_A[aw]*(sizei*sizej))) #Change one of these numbers
        # influencer_conf <- c(1,round(Vector_B[bw]*(sizei*sizej)))
-       
-       kk_conf <- Vector_A[aw]
-       kk_hes <- Vector_A[bw]
-    
+     
     # test_name <- 3
       #Attitude_threshold = Vector_A[aw]
       #Vaccinated_Disease_threshold = Vector_B[bw]
       #
       #Disease_threshold = Vector_B[bw]
+    
+      ##test_name <- 4 
+      kk_conf <- Vector_A[aw]
+      kk_hes <- Vector_A[bw]
       
-  
+#Arrays for collecting Confidence, Vaccination, Infected and Recovered frequencies over time per run 
+ 
+    #Confidence
   ATT_run = array(data = 0, dim = c(runend,NumTimesteps))
   ATT_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-  
+    #Vaccination
   VACC_run = array(data = 0, dim = c(runend,NumTimesteps))
   VACC_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-  
+    #Infected
   DIS_run = array(data = 0, dim = c(runend,NumTimesteps))
   DIS_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-  
+    #Recovered
   Recov_run = array(data = 0, dim = c(runend,NumTimesteps))
   Recov_run_avg = array(data = 0, dim = c(1,NumTimesteps))
   
   #g <- BiasVars[xg]
   #plot(NA, NA,main = c(paste(as.vector(Vars[[g]]),collapse = " "),paste(c(c("H ",Homophily), c("Vars", g),c("HT ", avg_Herd_time)),collapse = " ")),xlim = c(0, NumTimesteps),xlab = "Time", ylim = 0:1, ylab = "Frequency")
   
-  for (run in 1:runend){
+for (run in 1:runend){
   #print(run)
   #influencer <- c(1,round(Vars[[g]][8]*(sizei*sizej)))#c(0,round(0.3*(sizei*sizej))) #(Attitude, % of followers)
   #Vars[g,8]
-    
+
+# Influencer specifications
+# c(attitude state, reach from specified parameter list*population size)   
 influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Change one of these numbers
 influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
 
-followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
-followers_hes <- array(data = 0, c(1,2))  
+# #Initializing follower array. New followers are chosen each timestep
+# followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
+# followers_hes <- array(data = 0, c(1,2))  
     
 ATT = array(data = 0)#Attitude;for plotting
 Time = array(data =0)#Time;for plotting
@@ -352,6 +358,10 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
   #followers <- array(data = 0, c(1,2))
   # followers_conf <- array(data = 0, c(1,2))
   # followers_hes <- array(data = 0, c(1,2))
+  # 
+  #Initializing follower array. New followers are chosen each timestep
+ # followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
+ # followers_hes <- array(data = 0, c(1,2))  
 
   #if (influencer[2] > 0){
  
