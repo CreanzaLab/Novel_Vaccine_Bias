@@ -111,8 +111,8 @@ par(mfrow=c(2,2))
       #Disease_threshold = Vector_B[bw]
     
       ##test_name <- 4 
-      kk_conf <- Vector_A[aw]
-      kk_hes <- Vector_A[bw]
+      kk_conf <- Vector_A[aw] #Confident Influencer weight
+      kk_hes <- Vector_A[bw]  #Hesitant Influencer weight
       
 #Arrays for collecting Confidence, Vaccination, Infected and Recovered frequencies over time per run 
  
@@ -149,10 +149,10 @@ influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
 ATT = array(data = 0)#Attitude;for plotting
 Time = array(data =0)#Time;for plotting
 VACC = array(data =0)#Vacc. Freq;for plotting
-Disease = array(data =0)
-Recovered = array(data =0)
+Disease = array(data =0)#Infected;for plotting
+Recovered = array(data =0)#Recovered;for plotting
 
-Tcontagious = array(data = 0)
+Tcontagious = array(data = 0)#
 
 Individual_matrix=array(data=0, dim=c(sizei,sizej,4) )
 
@@ -165,15 +165,6 @@ addvarslist <- array(data= 0, dim = c(10,2))
 #g <- random_integers[rn] # row number in vars indexed by rn
   #print(g)
   
-
-# for (g in 90000:90010) {
-#   if (isTRUE(all.equal(Vars[[g]], (c(1,1,0.6, 0.4, 0.8, 0, 0.2, 0.6,0))))) {
-#     print(g)
-#   }
-# }
-#c(90000:90010)[sapply(90000:90010, function(x) isTRUE(all.equal(Vars[[x]], (c(1,1,0.6, 0.4, 0.8, 0, 0.2, 0.6,0)))))]
-#sapply(90000:90010, function(x) all.equal(Vars[[x]], (c(1,1,0.6, 0.4, 0.8, 0, 0.2, 0.6,0))) == TRUE)
-
 
 #for (g in 1:length(Vars)){#varsize #size[1] # #of rows in vars
  
@@ -791,8 +782,8 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
   
 
 ##Disease Spread##
- ###I wanted the disease to spread in relation to contact. So not randomly assigned  
-  exposed = array(data = 0, c(1,2))#rbind (0,0)?? zeros in 1 row 2 columns
+ #Exposed individuals are at risk of contracting the disease
+  exposed = array(data = 0, c(1,2)) #
   #contagious = array(data = 0, c(1,2))
   contagious = array(data = 0 , c(1,3))
   # Tcontagious = array(data = 0, c(1,3))
@@ -800,15 +791,15 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
 for (i in 1:sizei){
   for (j in 1:sizej){
     
-    if (Individual_matrix[i,j,3]==1){# if has the disease 
+    if (Individual_matrix[i,j,3]==1){# if infected 
      
-       contagious <- rbind(contagious,c(i,j,t))#collect in contagious
+       contagious <- rbind(contagious,c(i,j,t))#collects position (i,j) and infected timestep
   
        }
     
     #print(Individual_matrix[,,3])
     
-    if (Individual_matrix[i,j,3]==0 || Individual_matrix[i,j,3]==-1 ){#if no disease
+    if (Individual_matrix[i,j,3]==0 || Individual_matrix[i,j,3]==-1 ){# if not infected
       
       
          if (SumOfInfected >0){# Ediited from SumOfInfected2 4-24-23
