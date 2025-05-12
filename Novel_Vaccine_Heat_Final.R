@@ -133,10 +133,7 @@ par(mfrow=c(2,2))
   #plot(NA, NA,main = c(paste(as.vector(Vars[[g]]),collapse = " "),paste(c(c("H ",Homophily), c("Vars", g),c("HT ", avg_Herd_time)),collapse = " ")),xlim = c(0, NumTimesteps),xlab = "Time", ylim = 0:1, ylab = "Frequency")
   
 for (run in 1:runend){
-  #print(run)
-  #influencer <- c(1,round(Vars[[g]][8]*(sizei*sizej)))#c(0,round(0.3*(sizei*sizej))) #(Attitude, % of followers)
-  #Vars[g,8]
-
+ 
 # Influencer specifications
 # c(attitude state, reach from specified parameter list*population size)   
 influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Change one of these numbers
@@ -159,17 +156,12 @@ Individual_matrix=array(data=0, dim=c(sizei,sizej,4) )
 #addvars = array(data = 0, dim = c(size[1],2))#collects the final V and A for each line in var matrix
 addvars <- list()
 addvarslist <- array(data= 0, dim = c(10,2))
-#start_time = Sys.time()
-#Sys.sleep(0.5)
 
 #g <- random_integers[rn] # row number in vars indexed by rn
   #print(g)
   
-
 #for (g in 1:length(Vars)){#varsize #size[1] # #of rows in vars
  
-#print(Sys.time())
-
 # collect = array(data =0)
 collect_array = array(data =0)
 collect2_array = array(data =0)
@@ -180,36 +172,36 @@ Totalswaps = array(data=0)
 # Totrndmcollect = array(data =0)
 #vaccsum_novelty = array(data=0)
 
-#initial vaccination state is 0, i.e. Individual_matrix[i,j,1] stays at 0
-Attitude_threshold = Vars[[g]][1]#0.5 #80% of people have a positive attitude at the beginning
-#Vars[g,1]
-Disease_threshold = Vars[[g]][2]# 0.5 #40% have disease initially [3]
-#Vars[g,2]
-Vaccinated_Disease_threshold = (Vars[[g]][3])#0.014 # Prob of contracting disease if vaccinated
-#Vars[g,3]
-Infected_Disease_threshold = Vars[[g]][4]#0.014# Find value from lit. #Infection prob if previously infected
-#Vars[g,4]
-CulturalBias <- c(-1, 0 , 1) #(novelty, neutral, conform);p' = p + D*p(1-p)(2p-1) Denton, Liberman, Feldman 2021
-BiasProb <- c(Vars[[g]][5],Vars[[g]][6],Vars[[g]][7]) #c(0.2,0.3,0.5) #c(0.5,0.2,0.3)##probability of Novelty, Neutral, Conformity Bias
-#Vars[g,5]#Vars[g,6]#Vars[g,7]
-#print(BiasProb)
 
-Prob_of_infect = Vars[[g]][10]#0.4# Probability of infection if susceptible (never infected/unvaccinated)
+#Parameter assignments and variable initialization
+#initial vaccination state is 0, i.e. Individual_matrix[i,j,1]=0
+#Vars = c(0.1, 0.25, 0.26, 0.17, B-, B0, B+, 0.48, 0.28, 0.19)
+Attitude_threshold = Vars[[g]][1]#Confidence Frequency; Vars[g,1]
+Disease_threshold = Vars[[g]][2]#Infected;Vars[g,2]
+Vaccinated_Disease_threshold = Vars[[g]][3]#Infection Probability if vaccinated; Vars[g,3]
+Infected_Disease_threshold = Vars[[g]][4]#Infection probability if previously infected; Vars[g,4]
+CulturalBias <- c(-1, 0 , 1) #(novelty, neutral, conform)
+BiasProb <- c(Vars[[g]][5],Vars[[g]][6],Vars[[g]][7])#Bias Proportions; Vars[g,5], Vars[g,6], Vars[g,7]
+Prob_of_infect = Vars[[g]][10]# Probability of infection if susceptible (never infected/unvaccinated)
 
-##Initialization Step##
-novl_hes = 0;novl_conf = 0
-novl_unvacc = 0;novl_vacc = 0
 
-neut_hes = 0;neut_conf = 0;
-neut_unvacc = 0;neut_vacc = 0;
+# ##Initialization Step##
 
-confr_hes = 0;confr_conf = 0
-confr_unvacc = 0;confr_vacc = 0
+#For Bias-attitude Historgram 
+# novl_hes = 0;novl_conf = 0
+# novl_unvacc = 0;novl_vacc = 0
+# 
+# neut_hes = 0;neut_conf = 0;
+# neut_unvacc = 0;neut_vacc = 0;
+# 
+# confr_hes = 0;confr_conf = 0
+# confr_unvacc = 0;confr_vacc = 0
 
 #keep Individual_matrix[i,j,1]=0 because nobody is vaccinated yet
 for (i in 1:sizei){#go through each agent in the matrix
   for (j in 1:sizej){
-    #print(i, j)
+    #print(i, j) #for tracking
+    
     #initialize attitude state
     random_number=runif(1)#pick one random number from uniform distribution
     if (random_number < Attitude_threshold){# if above number < threshold
@@ -224,51 +216,40 @@ for (i in 1:sizei){#go through each agent in the matrix
     Individual_matrix[i,j,4]=sample(CulturalBias,1,prob=BiasProb)
     #Not random, but should it be?? 
    
-    if (Individual_matrix[i,j,4] == -1 & Individual_matrix[i,j,2] == 0){
-   novl_hes = novl_hes +1
-    }
-    if (Individual_matrix[i,j,4] == -1 & Individual_matrix[i,j,2] == 1){
-      novl_conf = novl_conf +1
-    }
-   #
-    if (Individual_matrix[i,j,4] == 0 & Individual_matrix[i,j,2] == 0){
-      neut_hes = neut_hes +1
-    }
-    if (Individual_matrix[i,j,4] == 0 & Individual_matrix[i,j,2] == 1){
-      neut_conf = neut_conf +1
-    } 
-    #
-    if (Individual_matrix[i,j,4] == 1 & Individual_matrix[i,j,2] == 0){
-      confr_hes = confr_hes +1
-    }
-    if (Individual_matrix[i,j,4] == 1 & Individual_matrix[i,j,2] == 1){
-      confr_conf = confr_conf +1
-    } 
+    ##For Bias-attitude Historgram
+   #  if (Individual_matrix[i,j,4] == -1 & Individual_matrix[i,j,2] == 0){
+   # novl_hes = novl_hes +1
+   #  }
+   #  if (Individual_matrix[i,j,4] == -1 & Individual_matrix[i,j,2] == 1){
+   #    novl_conf = novl_conf +1
+   #  }
+   # #
+   #  if (Individual_matrix[i,j,4] == 0 & Individual_matrix[i,j,2] == 0){
+   #    neut_hes = neut_hes +1
+   #  }
+   #  if (Individual_matrix[i,j,4] == 0 & Individual_matrix[i,j,2] == 1){
+   #    neut_conf = neut_conf +1
+   #  } 
+   #  #
+   #  if (Individual_matrix[i,j,4] == 1 & Individual_matrix[i,j,2] == 0){
+   #    confr_hes = confr_hes +1
+   #  }
+   #  if (Individual_matrix[i,j,4] == 1 & Individual_matrix[i,j,2] == 1){
+   #    confr_conf = confr_conf +1
+   #  } 
     
     
  }#j
 }#i #End of Initialization
 
-init_tot_vacc = sum(Individual_matrix[,,1])/(sizei*sizej)
-init_tot_conf = sum(Individual_matrix[,,2])/(sizei*sizej)
-init_tot_infct = sum(Individual_matrix[,,3][Individual_matrix[,,3]>0])/(sizei*sizej)
-init_tot_recov = abs(sum(Individual_matrix[,,3][Individual_matrix[,,3]<0]))/(sizei*sizej)
-
-# print("start")
-# print(c(novl_hes,novl_conf,neut_hes,neut_conf, confr_hes, confr_conf))
-
-# att_startpie <- c(novl_hes,novl_conf,neut_hes,neut_conf, confr_hes, confr_conf)
-# att_startlabels <- c("novl_hes","novl_conf","neut_hes","neut_conf", "confr_hes", "confr_conf")
-# att_startpie0 <- c(novl_hes,neut_hes, confr_hes)
-# att_startpie1 <- c(novl_conf,neut_conf,confr_conf)
-
-# require(animation)
-# #L <- layout.fruchterman.reingold(Glist[[1]])
-# ani.options(interval=1)
+# Initial frequencies for plotting
+init_tot_vacc = sum(Individual_matrix[,,1])/(sizei*sizej)#Vaccinated
+init_tot_conf = sum(Individual_matrix[,,2])/(sizei*sizej)#Confident
+init_tot_infct = sum(Individual_matrix[,,3][Individual_matrix[,,3]>0])/(sizei*sizej)#Infected
+init_tot_recov = abs(sum(Individual_matrix[,,3][Individual_matrix[,,3]<0]))/(sizei*sizej)#Recovered
 
 
-## Edge Adjustment##
-
+## Edge Adjustment such that agents on the edge of the matrix have neighbors on all sides ##
 starti <- i-1 #assigning name to possible "0" index
 if (starti == 0){
   newstarti = sizei#currently name of matrix length
@@ -299,10 +280,11 @@ if (endj == sizej +1){#"end" +1; when
 ##Post-initialization Timesteps
 for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
  
- collect_conf = 0 #collecting A+ person1 swaps w/ homophily
- collect_hes = 0 # collecting A- person1 swaps w/ homophily
- rndmcollect_conf = 0 #collecting A+ person1 swaps (random)
- rndmcollect_hes = 0# collecting A- person1 swaps (random)
+  #Collects swaps
+ # collect_conf = 0 #collecting A+ person1 swaps w/ homophily
+ # collect_hes = 0 # collecting A- person1 swaps w/ homophily
+ # rndmcollect_conf = 0 #collecting A+ person1 swaps (random)
+ # rndmcollect_hes = 0# collecting A- person1 swaps (random)
 
 ###Printing to pdf of GIF###
 
@@ -344,12 +326,7 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
 
     
 ###Impact of influencer###
-    ## influencer <- c(0,0.3*(sizei*sizej))==> (attitude, % followers)-> random 30% of pop will match influence attitude
-
-  #followers <- array(data = 0, c(1,2))
-  # followers_conf <- array(data = 0, c(1,2))
-  # followers_hes <- array(data = 0, c(1,2))
-  # 
+   
   #Initializing follower array. New followers are chosen each timestep
  # followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
  # followers_hes <- array(data = 0, c(1,2))  

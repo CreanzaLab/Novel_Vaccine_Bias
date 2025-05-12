@@ -139,10 +139,10 @@ Individual_matrix=array(data=0, dim=c(sizei,sizej,4))# Initial empty population 
 #Vars = c(0.1, 0.25, 0.26, 0.17, B-, B0, B+, 0.48, 0.28, 0.19)
 Attitude_threshold = Vars[[g]][1]# Confidence Frequency; Vars[g,1]
 Disease_threshold = Vars[[g]][2]#Infected;Vars[g,2]
-Vaccinated_Disease_threshold = (Vars[[g]][3])#Infection Probability if vaccinated; Vars[g,3]
+Vaccinated_Disease_threshold = Vars[[g]][3]#Infection Probability if vaccinated; Vars[g,3]
 Infected_Disease_threshold = Vars[[g]][4]#Infection probability if previously infected; Vars[g,4]
 CulturalBias <- c(-1, 0 , 1)# novelty, neutral, conform IDs
-BiasProb <- c(Vars[[g]][5],Vars[[g]][6],Vars[[g]][7])#Vars[g,5], Vars[g,6], Vars[g,7]
+BiasProb <- c(Vars[[g]][5],Vars[[g]][6],Vars[[g]][7])#Bias Proportions; Vars[g,5], Vars[g,6], Vars[g,7]
 Prob_of_infect = Vars[[g]][10]# Probability of infection if susceptible (never infected/unvaccinated)
 
 for (i in 1:sizei){#Going through each agent in the matrix
