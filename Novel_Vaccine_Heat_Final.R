@@ -93,9 +93,11 @@ par(mfrow=c(2,2))
  
   for (aw in 1:length(Vector_A)){ #For graphing: aw- y label bw x label
     for (bw in 1:length(Vector_B)){
-#print(c(aw,bw)) For progress tracking
+    
+      #print(c(aw,bw)) For progress tracking
   
-  ## Heatmap  Tests  
+  ### Heatmap  Tests 
+      
       #test_name <- 1 # Probability of Infection vs Vaccinated Infection Probability
        # Prob_of_infect <- Vector_A[aw]
        # Vaccinated_Disease_threshold <- Vector_B[bw]
@@ -107,7 +109,7 @@ par(mfrow=c(2,2))
     # test_name <- 3
       #Attitude_threshold = Vector_A[aw]
       #Vaccinated_Disease_threshold = Vector_B[bw]
-      #
+      #OR
       #Disease_threshold = Vector_B[bw]
     
       ##test_name <- 4 
@@ -134,7 +136,7 @@ par(mfrow=c(2,2))
   
 for (run in 1:runend){
  
-# Influencer specifications
+# Influencer specifications - set each run
 # c(attitude state, reach from specified parameter list*population size)   
 influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Change one of these numbers
 influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
@@ -149,7 +151,7 @@ VACC = array(data =0)#Vacc. Freq;for plotting
 Disease = array(data =0)#Infected;for plotting
 Recovered = array(data =0)#Recovered;for plotting
 
-Tcontagious = array(data = 0)#
+Tcontagious = array(data = 0) #
 
 Individual_matrix=array(data=0, dim=c(sizei,sizej,4) )
 

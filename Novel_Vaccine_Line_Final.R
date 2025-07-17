@@ -265,8 +265,6 @@ for (t in 1:NumTimesteps){
       in_followers_conf <- any((followers_conf[, 1]== i) * (followers_conf[, 2] == j))
       in_followers_hes <- any((followers_hes[, 1]== i) * (followers_hes[, 2] == j))
       
-    
- 
       
       #tally the A+ attitudes around agent  
       SumOfPostitives=Individual_matrix[starti,startj,2]+Individual_matrix[starti,j,2]+Individual_matrix[starti,endj,2]+

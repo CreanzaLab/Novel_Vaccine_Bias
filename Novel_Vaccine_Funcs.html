@@ -374,14 +374,14 @@ topnov = 0.99 - 0.5/(1+ exp(-13*((SumOfVaccinated/8)-0.5))) #A+ Prob of vacc Nov
 #Prob. of vaccinating if confident (A+) but hold conformity (B+) bias
 topconfm = 0.5+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5))) #A+ Prob of vacc Conform
 #Prob. of vaccinating if confident (A+) but hold neutral (B0) bias
-neut_conf_vacc = 0.05*(SumOfVaccinated) + 0.55 #(12/04/24)
+neut_conf_vacc = 0.05*(SumOfVaccinated) + 0.55 #-0.0003125*(SumOfVaccinated)^2 + 0.06375*SumOfVaccinated + 0.5(12/04/24)
 
 #Prob. of vaccinating if hesitant (A-) but hold novelty (B-) bias
 botnov = 0.5 - 0.5/(1+ exp(-13*((SumOfVaccinated/8)-0.5))) #A- Prob of vacc Nov
 #Prob. of vaccinating if hesitant (A-) but hold conformity (B+) bias
 botconfm = 0.002+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))#A- Prob of vacc conform
 #Prob. of vaccinating if hesitant (A-) but hold neutral (B0) bias
-neut_hes_vacc = 0.05*(SumOfVaccinated) + 0.05</code></pre>
+neut_hes_vacc = 0.05*(SumOfVaccinated) + 0.05 #0.003125*(SumOfVaccinated)^2 + 0.025*SumOfVaccinated + 0.1 #</code></pre>
 </div>
 <div id="vaccination-by-vaccination-plots" class="section level3">
 <h3>Vaccination by Vaccination Plots</h3>
@@ -410,7 +410,8 @@ confident individuals (A+)</h3>
 <pre class="r"><code>#Confident novelty bias
 px3 = 0.002 + (0.99/(1 + exp(-13*((SumOfPostitives/8)-0.5)))) 
 #Confident neutral bias
-neut_conf_transb = -0.075*(SumOfPostitives) + 0.8 #Change in code
+neut_conf_transb = -0.075*(SumOfPostitives) + 0.8
+#0.003125*SumOfPostitives^2 - 0.0875*SumOfPostitives + 0.8
 #Confident conformist bias
 pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))</code></pre>
 </div>
@@ -427,7 +428,8 @@ legend(&quot;top&quot;, c(&quot;Conform&quot;, &quot;Neutral&quot;, &quot;Novelt
 <pre class="r"><code>#Hesitant-Novelty bias
 pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
 #Hesitant-Neutral Bias
-neut_hes_transb = 0.075*(SumOfPostitives) + 0.2 #Change in code
+neut_hes_transb = 0.075*(SumOfPostitives) + 0.2
+#0.003125*SumOfPostitives^2 + 0.0375*SumOfPostitives + 0.3
 #Hesitant conformist bias
 pr3 = 0.002 + 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5))) 
 

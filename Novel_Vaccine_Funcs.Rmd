@@ -2,7 +2,9 @@
 title: "Novel_Vaccine_Funcs"
 author: "K. Anderson"
 date: "2025-01-27"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 Created from organization of "NovelVaccineFuns_B.R"

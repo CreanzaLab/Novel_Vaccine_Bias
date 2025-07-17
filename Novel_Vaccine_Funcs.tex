@@ -1,0 +1,329 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Novel\_Vaccine\_Funcs},
+  pdfauthor={K. Anderson},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Novel\_Vaccine\_Funcs}
+\author{K. Anderson}
+\date{2025-01-27}
+
+\begin{document}
+\maketitle
+
+Created from organization of ``NovelVaccineFuns\_B.R''
+
+\hypertarget{input-ranges}{%
+\subsubsection{Input ranges}\label{input-ranges}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{SumOfPostitives }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\SpecialCharTok{:}\DecValTok{8}\NormalTok{)}
+\NormalTok{SumOfInfected }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\SpecialCharTok{:}\DecValTok{8}\NormalTok{)}
+\NormalTok{SumOfVaccinated }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\SpecialCharTok{:}\DecValTok{8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{vaccination-probabilities}{%
+\subsection{Vaccination Probabilities}\label{vaccination-probabilities}}
+
+\hypertarget{functions-for-vaccination-probability-based-on-surrounding-vaccinated-individuals-v}{%
+\subsubsection{Functions for vaccination probability based on
+surrounding vaccinated individuals
+(V+)}\label{functions-for-vaccination-probability-based-on-surrounding-vaccinated-individuals-v}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Prob. of vaccinating if confident (A+) but hold novelty (B{-}) bias}
+\NormalTok{topnov }\OtherTok{=} \FloatTok{0.99} \SpecialCharTok{{-}} \FloatTok{0.5}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{13}\SpecialCharTok{*}\NormalTok{((SumOfVaccinated}\SpecialCharTok{/}\DecValTok{8}\NormalTok{)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{))) }\CommentTok{\#A+ Prob of vacc Nov}
+\CommentTok{\#Prob. of vaccinating if confident (A+) but hold conformity (B+) bias}
+\NormalTok{topconfm }\OtherTok{=} \FloatTok{0.5}\SpecialCharTok{+} \FloatTok{0.49}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{13}\SpecialCharTok{*}\NormalTok{((SumOfVaccinated}\SpecialCharTok{/}\DecValTok{8}\NormalTok{)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{))) }\CommentTok{\#A+ Prob of vacc Conform}
+\CommentTok{\#Prob. of vaccinating if confident (A+) but hold neutral (B0) bias}
+\NormalTok{neut\_conf\_vacc }\OtherTok{=} \FloatTok{0.05}\SpecialCharTok{*}\NormalTok{(SumOfVaccinated) }\SpecialCharTok{+} \FloatTok{0.55} \CommentTok{\#{-}0.0003125*(SumOfVaccinated)\^{}2 + 0.06375*SumOfVaccinated + 0.5(12/04/24)}
+
+\CommentTok{\#Prob. of vaccinating if hesitant (A{-}) but hold novelty (B{-}) bias}
+\NormalTok{botnov }\OtherTok{=} \FloatTok{0.5} \SpecialCharTok{{-}} \FloatTok{0.5}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{13}\SpecialCharTok{*}\NormalTok{((SumOfVaccinated}\SpecialCharTok{/}\DecValTok{8}\NormalTok{)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{))) }\CommentTok{\#A{-} Prob of vacc Nov}
+\CommentTok{\#Prob. of vaccinating if hesitant (A{-}) but hold conformity (B+) bias}
+\NormalTok{botconfm }\OtherTok{=} \FloatTok{0.002}\SpecialCharTok{+} \FloatTok{0.49}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{13}\SpecialCharTok{*}\NormalTok{((SumOfVaccinated}\SpecialCharTok{/}\DecValTok{8}\NormalTok{)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{)))}\CommentTok{\#A{-} Prob of vacc conform}
+\CommentTok{\#Prob. of vaccinating if hesitant (A{-}) but hold neutral (B0) bias}
+\NormalTok{neut\_hes\_vacc }\OtherTok{=} \FloatTok{0.05}\SpecialCharTok{*}\NormalTok{(SumOfVaccinated) }\SpecialCharTok{+} \FloatTok{0.05} \CommentTok{\#0.003125*(SumOfVaccinated)\^{}2 + 0.025*SumOfVaccinated + 0.1 \#}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{vaccination-by-vaccination-plots}{%
+\subsubsection{Vaccination by Vaccination
+Plots}\label{vaccination-by-vaccination-plots}}
+
+\includegraphics{Novel_Vaccine_Funcs_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\hypertarget{functions-for-vaccination-probability-based-on-surrounding-infected-individuals-d}{%
+\subsubsection{Functions for vaccination probability based on
+surrounding infected individuals
+(D+)}\label{functions-for-vaccination-probability-based-on-surrounding-infected-individuals-d}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Probability of Vaccinating if confident}
+\NormalTok{pm3 }\OtherTok{=}\NormalTok{  (}\FloatTok{1.01} \SpecialCharTok{{-}} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.35}\SpecialCharTok{*}\NormalTok{ SumOfInfected))}\SpecialCharTok{/}\DecValTok{2} \SpecialCharTok{+} \FloatTok{0.5}
+\CommentTok{\#Probability of Vaccinating if hesitant}
+\NormalTok{pn3 }\OtherTok{=}\NormalTok{ (}\FloatTok{1.2} \SpecialCharTok{{-}} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.35}\SpecialCharTok{*}\NormalTok{ SumOfInfected))}\SpecialCharTok{/}\DecValTok{2} \SpecialCharTok{+} \FloatTok{0.1}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{vaccination-by-infected-plots}{%
+\subsubsection{Vaccination by Infected
+Plots}\label{vaccination-by-infected-plots}}
+
+\includegraphics{Novel_Vaccine_Funcs_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\hypertarget{attitude-transition-probabilities}{%
+\subsection{Attitude Transition
+Probabilities}\label{attitude-transition-probabilities}}
+
+\hypertarget{functions-for-attitude-transition-probability-based-on-surrounding-confident-individuals-a}{%
+\subsubsection{Functions for attitude transition probability based on
+surrounding confident individuals
+(A+)}\label{functions-for-attitude-transition-probability-based-on-surrounding-confident-individuals-a}}
+
+\hypertarget{confident}{%
+\paragraph{Confident}\label{confident}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Confident novelty bias}
+\NormalTok{px3 }\OtherTok{=} \FloatTok{0.002} \SpecialCharTok{+}\NormalTok{ (}\FloatTok{0.99}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{13}\SpecialCharTok{*}\NormalTok{((SumOfPostitives}\SpecialCharTok{/}\DecValTok{8}\NormalTok{)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{)))) }
+\CommentTok{\#Confident neutral bias}
+\NormalTok{neut\_conf\_transb }\OtherTok{=} \SpecialCharTok{{-}}\FloatTok{0.075}\SpecialCharTok{*}\NormalTok{(SumOfPostitives) }\SpecialCharTok{+} \FloatTok{0.8}
+\CommentTok{\#0.003125*SumOfPostitives\^{}2 {-} 0.0875*SumOfPostitives + 0.8}
+\CommentTok{\#Confident conformist bias}
+\NormalTok{pz3 }\OtherTok{=} \FloatTok{0.99} \SpecialCharTok{{-}} \FloatTok{0.99}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{13}\SpecialCharTok{*}\NormalTok{((SumOfPostitives}\SpecialCharTok{/}\DecValTok{8}\NormalTok{)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{transition-if-confident-plot}{%
+\subsubsection{Transition if Confident
+Plot}\label{transition-if-confident-plot}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(SumOfPostitives, px3, }\AttributeTok{type=} \StringTok{"o"}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{,}\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{ylim =} \DecValTok{0}\SpecialCharTok{:}\DecValTok{1}\NormalTok{,}\AttributeTok{xlab =} \StringTok{"Number of Surrounding Confident (A+)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Prob. of Att. Trans. to Hesit. (A+ {-}{-}\textgreater{} A{-})"}\NormalTok{)}\CommentTok{\#novelty}
+\FunctionTok{lines}\NormalTok{(SumOfVaccinated, neut\_conf\_transb, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}\CommentTok{\#neutral 8/14 poly}
+\FunctionTok{lines}\NormalTok{(SumOfPostitives, pz3, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}\CommentTok{\#conform}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"top"}\NormalTok{, }\FunctionTok{c}\NormalTok{(}\StringTok{"Conform"}\NormalTok{, }\StringTok{"Neutral"}\NormalTok{, }\StringTok{"Novelty"}\NormalTok{), }\AttributeTok{fill =} \FunctionTok{c}\NormalTok{(}\StringTok{"blue"}\NormalTok{,}\StringTok{"black"}\NormalTok{, }\StringTok{"red"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Novel_Vaccine_Funcs_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\hypertarget{hesitant}{%
+\paragraph{Hesitant}\label{hesitant}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Hesitant{-}Novelty bias}
+\NormalTok{pz3 }\OtherTok{=} \FloatTok{0.99} \SpecialCharTok{{-}} \FloatTok{0.99}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{13}\SpecialCharTok{*}\NormalTok{((SumOfPostitives}\SpecialCharTok{/}\DecValTok{8}\NormalTok{)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{)))}
+\CommentTok{\#Hesitant{-}Neutral Bias}
+\NormalTok{neut\_hes\_transb }\OtherTok{=} \FloatTok{0.075}\SpecialCharTok{*}\NormalTok{(SumOfPostitives) }\SpecialCharTok{+} \FloatTok{0.2}
+\CommentTok{\#0.003125*SumOfPostitives\^{}2 + 0.0375*SumOfPostitives + 0.3}
+\CommentTok{\#Hesitant conformist bias}
+\NormalTok{pr3 }\OtherTok{=} \FloatTok{0.002} \SpecialCharTok{+} \FloatTok{0.99}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{13}\SpecialCharTok{*}\NormalTok{((SumOfPostitives}\SpecialCharTok{/}\DecValTok{8}\NormalTok{)}\SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{))) }
+
+\CommentTok{\# neut\_hes\_trans2 = 0.003125*(SumOfPostitives)\^{}2 + 0.0375*SumOfPostitives + 0.3}
+\CommentTok{\# neut\_conf\_trans = {-}0.0003125*(SumOfVaccinated)\^{}2 {-} 0.12125*SumOfVaccinated + 0.99}
+\CommentTok{\# neut\_conf\_trans2 = 0.1125*(SumOfVaccinated) + 0.05 \#Change in main code}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{transition-if-hesitant-plot}{%
+\subsubsection{Transition if Hesitant
+Plot}\label{transition-if-hesitant-plot}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(SumOfPostitives, pz3, }\AttributeTok{type=} \StringTok{"o"}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{,}\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{ylim =} \DecValTok{0}\SpecialCharTok{:}\DecValTok{1}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Number of Surrounding Confident (A+)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Prob. of Att. Trans to Conf. (A{-} {-}{-}\textgreater{} A+)"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(SumOfPostitives, neut\_hes\_transb, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}\CommentTok{\#neutral 8/14 poly}
+\FunctionTok{lines}\NormalTok{(SumOfPostitives, pr3, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"top"}\NormalTok{, }\FunctionTok{c}\NormalTok{(}\StringTok{"Conform"}\NormalTok{, }\StringTok{"Neutral"}\NormalTok{, }\StringTok{"Novelty"}\NormalTok{), }\AttributeTok{fill =} \FunctionTok{c}\NormalTok{(}\StringTok{"blue"}\NormalTok{,}\StringTok{"black"}\NormalTok{, }\StringTok{"red"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Novel_Vaccine_Funcs_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\hypertarget{influencer-effects}{%
+\paragraph{Influencer Effects}\label{influencer-effects}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{prob\_of\_change }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
+\NormalTok{kk }\OtherTok{=} \FloatTok{0.14}
+
+\CommentTok{\#if agent is hesitant and only follows confident {-}\textgreater{} increase prob of change by some factor determined by kk}
+
+\CommentTok{\#Currently: yy = prob\_of\_change + kk;  yy \textless{}{-} (1+kk)*(prob\_of\_change)}
+\CommentTok{\# New: yy = kk + (1{-}kk)*x\^{}n OR}
+\NormalTok{yh1 }\OtherTok{=}\NormalTok{ kk }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{kk)}\SpecialCharTok{*}\NormalTok{prob\_of\_change }\CommentTok{\#(Change in code; no need for 0 condition)}
+
+\CommentTok{\# if hesitant agent only follows hesitant {-}{-}\textgreater{} reduce prob of change by some factor of kk}
+
+\CommentTok{\#Currently: yy \textless{}{-} prob\_of\_change{-}kk; yy \textless{}{-} prob\_of\_change*(1{-}kk)}
+\CommentTok{\#New:}
+\NormalTok{yh2 }\OtherTok{=}\NormalTok{ prob\_of\_change}\SpecialCharTok{{-}}\NormalTok{ (kk}\SpecialCharTok{*}\NormalTok{prob\_of\_change) }\CommentTok{\#(*** Essentially the same. Also no need for 0 condition)}
+
+
+\CommentTok{\#if hesitant agent follows both confident and hesitant ()}
+  \CommentTok{\#{-}\textgreater{} reduced prob of change but not as much as following only hesitant (incorporates backfire effect)}
+
+\CommentTok{\#Currently: yy \textless{}{-} prob\_of\_change {-}kk/2; (1{-}kk/2)*(prob\_of\_change)}
+\CommentTok{\#New:}
+\NormalTok{yh3 }\OtherTok{=}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{kk}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{prob\_of\_change }\CommentTok{\#(*** Essentially the same. Also no need for 0 condition {-} Keep)}
+
+  \CommentTok{\# OR Prob of change increases, but not as much as if only following confident}
+\NormalTok{yh3b }\OtherTok{=}\NormalTok{ kk}\SpecialCharTok{/}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{kk}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{prob\_of\_change}
+
+\FunctionTok{plot}\NormalTok{(prob\_of\_change, yh1, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{ylim =} \DecValTok{0}\SpecialCharTok{:}\DecValTok{1}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Attitude Transition Probability if Hesitant (A{-} {-}{-}\textgreater{} A+)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Probability after Influencer Effects"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(prob\_of\_change, yh2, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(prob\_of\_change, yh3, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(prob\_of\_change, yh3b, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+\FunctionTok{title}\NormalTok{(}\StringTok{"If Agent is Hesitant..."}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"top"}\NormalTok{, }\FunctionTok{c}\NormalTok{(}\StringTok{"Following Confident"}\NormalTok{, }\StringTok{"Following Hesitant"}\NormalTok{, }\StringTok{"Following Both"}\NormalTok{, }\StringTok{"Following Both\_b"}\NormalTok{), }\AttributeTok{lty =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"black"}\NormalTok{,}\StringTok{"blue"}\NormalTok{, }\StringTok{"red"}\NormalTok{, }\StringTok{"red"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Novel_Vaccine_Funcs_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#If confident and only following confident {-}{-}\textgreater{} reduce probability of change by kk}
+
+\CommentTok{\#Currently: yy \textless{}{-} prob\_of\_change {-} kk; yy \textless{}{-} prob\_of\_change*(1{-}kk)}
+\CommentTok{\#Update:}
+\NormalTok{yc1 }\OtherTok{=}\NormalTok{ prob\_of\_change}\SpecialCharTok{{-}}\NormalTok{ (kk}\SpecialCharTok{*}\NormalTok{prob\_of\_change) }\CommentTok{\#(*** Essentially the same. Also no need for 0 condition)}
+
+\CommentTok{\#if confident and only following hesitant {-}\textgreater{} increase prob of change}
+
+\CommentTok{\#Currently: yy \textless{}{-} prob\_of\_change + kk; yy \textless{}{-} prob\_of\_change*(1+kk)}
+\CommentTok{\#Update:}
+\NormalTok{yc2 }\OtherTok{=}\NormalTok{ kk }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{kk)}\SpecialCharTok{*}\NormalTok{prob\_of\_change }\CommentTok{\#(Change in code; no need for 0 condition)}
+
+\CommentTok{\# if confident and following both confident and hesitant }
+    \CommentTok{\#{-}{-}\textgreater{} reduce probability of change but not as much only following confident}
+   
+\CommentTok{\#Currently: yy \textless{}{-} prob\_of\_change {-} kk/2; yy = (1{-}kk/2)*(prob\_of\_change)}
+\CommentTok{\#Update:}
+\NormalTok{yc3 }\OtherTok{=}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{kk}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{prob\_of\_change }\CommentTok{\#(*** Essentially the same. Also no need for 0 condition {-}{-} Keep)}
+
+    \CommentTok{\#OR Prob of change increases, but not as much as if only following hesitant}
+\NormalTok{yc3b }\OtherTok{=}\NormalTok{ kk}\SpecialCharTok{/}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{kk}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{prob\_of\_change}
+
+
+\FunctionTok{plot}\NormalTok{(prob\_of\_change, yc1, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{ylim =} \DecValTok{0}\SpecialCharTok{:}\DecValTok{1}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Attitude Transition Probability if Confident (A+ {-}{-}\textgreater{} A{-})"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Probability after Influencer Effects"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(prob\_of\_change, yc2, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(prob\_of\_change, yc3, }\AttributeTok{type =} \StringTok{"o"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(prob\_of\_change, yc3b, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+\FunctionTok{title}\NormalTok{(}\StringTok{"If Agent is Confident..."}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"top"}\NormalTok{, }\FunctionTok{c}\NormalTok{(}\StringTok{"Following Confident"}\NormalTok{, }\StringTok{"Following Hesitant"}\NormalTok{, }\StringTok{"Following Both"}\NormalTok{, }\StringTok{"Following Both\_b"}\NormalTok{), }\AttributeTok{lty =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"black"}\NormalTok{,}\StringTok{"blue"}\NormalTok{, }\StringTok{"red"}\NormalTok{, }\StringTok{"red"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Novel_Vaccine_Funcs_files/figure-latex/unnamed-chunk-9-2.pdf}
+
+\end{document}
