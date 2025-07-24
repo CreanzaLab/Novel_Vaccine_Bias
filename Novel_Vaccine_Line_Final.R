@@ -292,7 +292,6 @@ for (t in 1:NumTimesteps){
     
         if (k==2){#if neutral bias
           
-        
           prob_of_change = -0.075*(SumOfPostitives) + 0.8
           
         }
@@ -313,8 +312,7 @@ for (t in 1:NumTimesteps){
     #if confident and only following hesitant -> increase prob of change
         if (in_followers_conf ==FALSE & in_followers_hes == TRUE){
           
-          
-            yy <- kk + (1-kk)*prob_of_change
+          yy <- kk + (1-kk)*prob_of_change
          
         }
         
@@ -390,7 +388,7 @@ for (t in 1:NumTimesteps){
           yy <- prob_of_change
         }
 
-        #adding stochasticity
+       #adding stochasticity
         individual_prob=runif(1)
         
         if(yy > individual_prob){
@@ -415,7 +413,6 @@ for (t in 1:NumTimesteps){
         Individual_matrix[endi,startj,1]+Individual_matrix[endi,j,1]+Individual_matrix[endi,endj,1]
       
 
-      
       if (Individual_matrix[i,j,1]==0){#if agent is unvaccinated
         
         if (Individual_matrix[i,j,2]== 1){# if confident
@@ -571,7 +568,7 @@ for (xx in 1: nrow(Tcontagious)){
     person2=Individual_matrix[choosei2,choosej2,]
     
     
-    #If set to randome swap 
+    #If set to random swap 
     if (Homophily==0){# No Homophily- Random Swapping (set at beginning)
      
       swap_random1 = runif(1)

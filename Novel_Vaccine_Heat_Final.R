@@ -70,7 +70,7 @@ NumTimesteps = 100 #Number of timesteps
 #Population size and homophily specification
 sizei <-40
 sizej <-25
-Homophily <- 1 #==1 if homophily biases movements; 0 if random movements
+Homophily <- 1 #== 1 if homophily biases movements; 0 if random movements
 
 runend = 10 #Number of runs
   
@@ -118,16 +118,16 @@ par(mfrow=c(2,2))
       
 #Arrays for collecting Confidence, Vaccination, Infected and Recovered frequencies over time per run 
  
-    #Confidence
+  #Confidence
   ATT_run = array(data = 0, dim = c(runend,NumTimesteps))
   ATT_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-    #Vaccination
+  #Vaccination
   VACC_run = array(data = 0, dim = c(runend,NumTimesteps))
   VACC_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-    #Infected
+  #Infected
   DIS_run = array(data = 0, dim = c(runend,NumTimesteps))
   DIS_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-    #Recovered
+  #Recovered
   Recov_run = array(data = 0, dim = c(runend,NumTimesteps))
   Recov_run_avg = array(data = 0, dim = c(1,NumTimesteps))
   
@@ -456,7 +456,7 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       
         if (k==2){#if neutral bias
           
-          prob_of_change = -0.075*(SumOfPostitives) + 0.8 #3/25/25
+          prob_of_change = -0.075*(SumOfPostitives) + 0.8
          
         }
         
@@ -470,73 +470,42 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
         
       #If confident and only following confident --> reduce probability of change by kk
           if (in_followers_conf ==TRUE & in_followers_hes == FALSE){
-         
+            
             #kk = kk_conf
-          
-            # if (prob_of_change == 0){ # If initial prob of change is zero use...# 8/17/23
-            #  
-            #    yy <- prob_of_change - kk #kk_conf
-            #   
-            # } else {
+            
+            yy <- prob_of_change*(1-kk)
               
-              yy <- prob_of_change*(1-kk)
-              
-            #yy <-  prob_of_change
-          
-        #} #nothing
           }
         
         
       #if confident and only following hesitant -> increase prob of change
           if (in_followers_conf ==FALSE & in_followers_hes == TRUE){
             
-            #kk = kk_hes
-              
-              # if (prob_of_change == 0){ # If initial prob of change is zero use...
-              #   
-              #   #yy <- prob_of_change + kk/10
-              #   
-              #   yy <- prob_of_change + kk # 8/17/23 #kk_hes
-              # 
-              # } else {
-                
-                #yy <- prob_of_change*(1+kk) #8/17/23
+            kk = kk_hes
             
-                yy <- kk + (1-kk)*prob_of_change #3/17/25
-              
-             # }
-               
+            yy <- kk + (1-kk)*prob_of_change
+           
         }
         
       #if confident and following both confident and hesitant --> reduce probability of change
           if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
-          #yy = prob_of_change/(1+(prob_of_change*kk/10)) #reduced prob of change
+         
+            kk = sum(kk_conf, kk_hes)/2
             
-            #kk = sum(kk_hes, kk_conf)/2
-          
-            # if (prob_of_change == 0){ # If initial prob of change is zero use...# 8/17/23
-            #   
-            #       yy <- prob_of_change - kk/2 
-            #   
-            # } else { 
+              yy = (1-kk/2)*(prob_of_change)
               
-              yy = (1-kk/2)*(prob_of_change) #8/17/23 same as 3/17
-              
-              
-           # }
-            
           }
         
-      #if following no one -> no action
+    #if agent follows neither influencer -> no action
           if (in_followers_conf == FALSE & in_followers_hes == FALSE){
           
               yy <- prob_of_change
         } 
        
-       ##adding stochasticity 
+      ##adding stochasticity 
        individual_prob=runif(1)
        
-           if(individual_prob < yy){ #<prob_of_change
+           if(individual_prob < yy){
           
           Individual_matrix[i,j,2]= 0
         }
@@ -555,80 +524,50 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
         
         if (k==2){#if neutral bias
           
-          prob_of_change = 0.075*(SumOfPostitives) + 0.2 #3/25/25
-          #prob_of_change = 0.003125*SumOfPostitives^2 + 0.0375*SumOfPostitives + 0.3 #True neutral 8/14/23
-        }
+          prob_of_change = 0.075*(SumOfPostitives) + 0.2
+          
+          }
         
         if (k==3){ #if conformity bias
         
         prob_of_change = 0.002 + 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
         }
       
-      ### Recalculate probability of mind change based on influencer effects
+  ### Recalculate probability of mind change based on influencer effects
       
   #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
         if (in_followers_conf == TRUE & in_followers_hes == FALSE){
           
-            #kk = kk_conf
+            kk = kk_conf
             
-            # if (prob_of_change == 0){
-            #     
-            #   yy = prob_of_change + kk #8/17/23
-            #   
-            #        #yy = prob_of_change + kk/10
-            #         } else{
-                      
-            # factor = kk*(1-prob_of_change)**2 + 1
-            #   yy = prob_of_change * factor
-             
-               #yy <- (1+kk)*(prob_of_change) #6/27/23 and 8/17/23
-          
-               yy <- kk + (1-kk)*prob_of_change #New 3/17/25
+               yy <- kk + (1-kk)*prob_of_change
               
-                   # }
-        
-                  }
+                  } #If hesitant and... end
 
-      
-       # if (!in_followers_conf & in_followers_hes){#... and only following hes -> no action
-          if (in_followers_conf == FALSE & in_followers_hes == TRUE){
+      # if hesitant agent only follows hesitant
+        if (in_followers_conf == FALSE & in_followers_hes == TRUE){
           
             kk = kk_hes
             
-            if(prob_of_change == 0){
-              yy <- prob_of_change-kk
-            }else{
-              yy <- prob_of_change*(1-kk)
-          #yy <- prob_of_change
-               #message("[", i, ",", j, "] hes only")
-          }
-    }
+            yy <- prob_of_change*(1-kk)
+          
+            }
 
-        #if (in_followers_conf & in_followers_hes){ # ... and following both confident and hesitant -> reduced prob of change
+      # if agent follows both confident and hesitant -> reduced prob of change
           if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
          
             kk = sum(kk_conf, kk_hes)/2
             
-            if(prob_of_change ==0){ #8/17/23
-              yy <- prob_of_change -kk/2} else {
-                
-                yy <- (1-kk/2)*(prob_of_change)# 8/17/23
+                yy <- (1-kk/2)*(prob_of_change)
             
-             # yy = prob_of_change/(1+(prob_of_change*kk/10))
-            #yy <- (1-kk)*(prob_of_change) #6/27/23
-             
-            # prob_of_change = yy
-                # message("[", i, ",", j, "] both")
-              }
-          }
-
-         #if (!in_followers_conf & !in_followers_hes){ #...and following neither -> no action
-           if (in_followers_conf == FALSE & in_followers_hes == FALSE){
-                   #message("[", i, ",", j, "] neither")
+                  }
+      #if agent follows neither influencer -> no action
+          if (in_followers_conf == FALSE & in_followers_hes == FALSE){
+                   
            yy <- prob_of_change
+           
            }
 
-       #print(prob_of_change)
        # adding stochasticity
          individual_prob=runif(1)
         
@@ -639,53 +578,29 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       }#end if hesitant
     
       
-      
-    # if (t == NumTimesteps){
-    #   print(c("run", runend,"randomprob", individual_prob))
-    #   print(c(c(i,j),"prob1",prob_of_change, "prob2", yy))
-    # }
-# }#if else
-      
-      
 ###Probability that agent[i,j] gets vaccinated###
 ##Based on surrounding infected and vaccinated, attitude and bias
  
       #Summing the number if infected individuals surrounding an agent
       infected_list <- c(Individual_matrix[starti,startj,3], Individual_matrix[starti,j,3], Individual_matrix[starti,endj,3],
-      Individual_matrix[i,startj,3], Individual_matrix[i,endj,3], Individual_matrix[endi,startj,3], Individual_matrix[endi,j,3], Individual_matrix[endi,endj,3])
+                        Individual_matrix[i,startj,3], Individual_matrix[i,endj,3], Individual_matrix[endi,startj,3], Individual_matrix[endi,j,3], Individual_matrix[endi,endj,3])
       
       SumOfInfected = sum(infected_list[infected_list>0])
       
-      #Summing the number of vaccinated individuals surrounding the agent
+    #Summing the number of vaccinated individuals surrounding the agent
       SumOfVaccinated=Individual_matrix[starti,startj,1]+Individual_matrix[starti,j,1]+Individual_matrix[starti,endj,1]+
         Individual_matrix[i,startj,1]+Individual_matrix[i,endj,1]+
         Individual_matrix[endi,startj,1]+Individual_matrix[endi,j,1]+Individual_matrix[endi,endj,1]
 
-         #for first prob of vacc eqn
-      # attit <- c(0,1)
-      # slopes_vacc <- Prob_of_infect#0.4#Disease_threshold#c(0.4,0.7)# slopes (A-, A+) Should these be different??
-      # b <-c(0.1, 0.5) #Attitude dependent intercept (A-, A+ >0.3)
-      # y = match(Individual_matrix[i,j,2], attit)
-      
-      # for (i in 1:sizei){
-      #   for (j in 1:sizej){
-      
-      if (Individual_matrix[i,j,1]==0){#unvaccinated
         
-        #prob_of_vacc = slopes_vacc*(SumOfInfected/8)+ b[y] # Prob based on surround. infect.
-        #pm3 =  (1.01 - exp(-0.35* SumOfInfected))/2 + 0.5 #conf
-        #pn3 = (1.2 - exp(-0.35* SumOfInfected))/2 + 0.1 #hes
-        
-        ##Should prob to vacc this be in own loop##
-        
+      if (Individual_matrix[i,j,1]==0){# if agent is unvaccinated
         
         if (Individual_matrix[i,j,2]== 1){# if confident
-          # Vacc prob based on infected
-          prob_of_vacc =  (1.01 - exp(-0.35* SumOfInfected))/2 + 0.5 #conf
+          
+          prob_of_vacc =  (1.01 - exp(-0.35* SumOfInfected))/2 + 0.5
         
-          #Vacc prob based on vaccinated and bias
-          if (k==1){#if agent holds novelty bias
-              #prob_of_vacc2 = exp(-4*(SumOfVaccinated/8))#VaccSum
+              if (k==1){#if agent holds novelty bias
+              
               prob_of_vacc2 = 0.99 - 0.5/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))
           }
           
@@ -696,23 +611,26 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
            # 
            #   prob_of_vacc2 = slopes*(SumOfVaccinated/8) + b
                #prob_of_vacc2 = 0.75 #True neutral
-               prob_of_vacc2 = -0.0003125*(SumOfVaccinated)^2 + 0.06375*SumOfVaccinated + 0.5
+               #prob_of_vacc2 = -0.0003125*(SumOfVaccinated)^2 + 0.06375*SumOfVaccinated + 0.5
+               #
+            prob_of_vacc2 = 0.05*(SumOfVaccinated) + 0.55
+            
           }
           
           if (k==3){ #if conformity bias
-             #prob_of_vacc2 = exp(-4*(1-(SumOfVaccinated/8)))#(1/7)*((SumOfPostitives/8)*exp(2*(SumOfPostitives/8)))
+            
              prob_of_vacc2 = 0.5+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))
-          }
+            
+               }
           
-      }
-        
+      }#end if confident
         
         if  (Individual_matrix[i,j,2]== 0){#if hesitant
           
           prob_of_vacc = (1.2 - exp(-0.35* SumOfInfected))/2 + 0.1
           
         if (k==1){#if agent holds novelty bias
-          #prob_of_vacc2 = (exp(-4*(SumOfVaccinated/8)))/2 
+          
           prob_of_vacc2 = 0.5 - 0.5/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))
         }
         
@@ -723,15 +641,20 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
           # 
           # prob_of_vacc2 = (slopes*(SumOfVaccinated/8) + b)/2
            #prob_of_vacc2 = 0.25 #True neutral
-           prob_of_vacc2 = 0.003125*(SumOfVaccinated)^2 + 0.025*SumOfVaccinated + 0.1
+           #
+           #prob_of_vacc2 = 0.003125*(SumOfVaccinated)^2 + 0.025*SumOfVaccinated + 0.1
+           
+           prob_of_vacc2 = 0.05*(SumOfVaccinated) + 0.05
+           
         }
         
         if (k==3){ #if conformity bias
-          #prob_of_vacc2 = (exp(-4*(1-(SumOfVaccinated/8))))/2 #(1/7)*((SumOfPostitives/8)*exp(2*(SumOfPostitives/8)))
+          
           prob_of_vacc2 = 0.002+ 0.49/(1+ exp(-13*((SumOfVaccinated/8)-0.5)))
-        }
+          
+          }
         
-        }
+        } #end if hesitant
         
         
         #09/13/2023
