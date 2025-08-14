@@ -1,0 +1,120 @@
+---
+title: "Novel_Vaccine_Scraps"
+author: "K. Anderson"
+date: "2025-08-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Heat 167 
+
+# # collect = array(data =0)
+# collect_array = array(data =0)
+# collect2_array = array(data =0)
+# Totalswaps = array(data=0)
+# 
+# # rndmcllctarr_conf = array(data =0)
+# # rndmcllctarr_hes = array(data =0)
+# # Totrndmcollect = array(data =0)
+# #vaccsum_novelty = array(data=0)
+
+Heat 181
+#For Bias-attitude Historgram 
+# novl_hes = 0;novl_conf = 0
+# novl_unvacc = 0;novl_vacc = 0
+# 
+# neut_hes = 0;neut_conf = 0;
+# neut_unvacc = 0;neut_vacc = 0;
+# 
+# confr_hes = 0;confr_conf = 0
+# confr_unvacc = 0;confr_vacc = 0
+
+Heat 200
+
+    ##For Bias-attitude Historgram
+   #  if (Individual_matrix[i,j,4] == -1 & Individual_matrix[i,j,2] == 0){
+   # novl_hes = novl_hes +1
+   #  }
+   #  if (Individual_matrix[i,j,4] == -1 & Individual_matrix[i,j,2] == 1){
+   #    novl_conf = novl_conf +1
+   #  }
+   # #
+   #  if (Individual_matrix[i,j,4] == 0 & Individual_matrix[i,j,2] == 0){
+   #    neut_hes = neut_hes +1
+   #  }
+   #  if (Individual_matrix[i,j,4] == 0 & Individual_matrix[i,j,2] == 1){
+   #    neut_conf = neut_conf +1
+   #  } 
+   #  #
+   #  if (Individual_matrix[i,j,4] == 1 & Individual_matrix[i,j,2] == 0){
+   #    confr_hes = confr_hes +1
+   #  }
+   #  if (Individual_matrix[i,j,4] == 1 & Individual_matrix[i,j,2] == 1){
+   #    confr_conf = confr_conf +1
+   #  } 
+    
+Heat ~ 240 (after timestep)
+#Collects swaps
+ # collect_conf = 0 #collecting A+ person1 swaps w/ homophily
+ # collect_hes = 0 # collecting A- person1 swaps w/ homophily
+ # rndmcollect_conf = 0 #collecting A+ person1 swaps (random)
+ # rndmcollect_hes = 0# collecting A- person1 swaps (random)
+
+
+Before Impact of inflencer
+###Printing to pdf of GIF###
+
+  #saveGIF({
+ 
+ 
+ # p <- 
+    # corrplot(Individual_matrix[,,4], method = "shade", col.lim = c(-1,1), col = c("white","tan", "maroon" ),
+    #          bg="lightblue", addgrid.col = "black", outline = TRUE, is.corr = FALSE)
+    # #image(1:sizej, 1:sizei, t(apply(Individual_matrix[,,1],2,rev)))#coord_flip()t(apply(x, 2, rev))
+    # title(main="Graph simulation example", sub=paste("Time = ", t), cex.main = 2, cex.sub = 2)
+ # col<- colorRampPalette(c("red", "white", "blue"))(256)
+ # heatmap(Individual_matrix[,,4], Rowv = NA, Colv = NA, col = col)
+ 
+ #  ###Making Matrix image for pdf and movie
+#   #fp <- file.path(dir_out, filename = paste0(t, ".png"))
+#    fp <- file.path(dir_out, filename = paste0(Sys.Date(),t, ".png"))#,#Check#used
+#   # png(filename = fp)
+#   #  png(file = paste(t, ".png"))
+# png(fp)#, height=400, width=400 #used
+# ##used
+# corrplot(Individual_matrix[,,3], method = "shade", col.lim = c(-1,1), col = c("white","tan", "maroon" ),
+# bg="lightblue", addgrid.col = "black", outline = TRUE, is.corr = FALSE)
+# image(1:sizej,1:sizei,fgh,col = c("grey", "red", "black"), axes= FALSE)#
+# #image(1:sizej,1:sizei,fgh, col = hcl.colors(3, palette = "viridis"), axes= FALSE)
+# axis(2, 1:sizej,rev(1:sizei))#left axis i(row) y
+# axis(3, 1:sizej,1:sizej)#top j (column) x
+# title(main="Graph simulation example", sub=paste("Time = ", t), cex.main = 1, cex.sub = 1)
+
+ #col=min(Individual_matrix[,,3]):max(Individual_matrix[,,3]
+#}, interval = 1, movie.name = "novelvax.gif", ani.width = 1000, ani.height = 1000)
+
+ #print(p)
+ #dev.off()

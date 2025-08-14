@@ -163,16 +163,6 @@ addvarslist <- array(data= 0, dim = c(10,2))
   #print(g)
   
 #for (g in 1:length(Vars)){#varsize #size[1] # #of rows in vars
- 
-# collect = array(data =0)
-collect_array = array(data =0)
-collect2_array = array(data =0)
-Totalswaps = array(data=0)
-
-# rndmcllctarr_conf = array(data =0)
-# rndmcllctarr_hes = array(data =0)
-# Totrndmcollect = array(data =0)
-#vaccsum_novelty = array(data=0)
 
 
 #Parameter assignments and variable initialization
@@ -189,16 +179,6 @@ Prob_of_infect = Vars[[g]][10]# Probability of infection if susceptible (never i
 
 # ##Initialization Step##
 
-#For Bias-attitude Historgram 
-# novl_hes = 0;novl_conf = 0
-# novl_unvacc = 0;novl_vacc = 0
-# 
-# neut_hes = 0;neut_conf = 0;
-# neut_unvacc = 0;neut_vacc = 0;
-# 
-# confr_hes = 0;confr_conf = 0
-# confr_unvacc = 0;confr_vacc = 0
-
 #keep Individual_matrix[i,j,1]=0 because nobody is vaccinated yet
 for (i in 1:sizei){#go through each agent in the matrix
   for (j in 1:sizej){
@@ -212,35 +192,12 @@ for (i in 1:sizei){#go through each agent in the matrix
     #initialize disease state
     random_number2=runif(1)
     if (random_number2 < Disease_threshold){
-        Individual_matrix[i,j,3]=1# assign infected
+        Individual_matrix[i,j,3]=1# Assign infected
     }
     #Assigning cultural bias based on probability
     Individual_matrix[i,j,4]=sample(CulturalBias,1,prob=BiasProb)
-    #Not random, but should it be?? 
-   
-    ##For Bias-attitude Historgram
-   #  if (Individual_matrix[i,j,4] == -1 & Individual_matrix[i,j,2] == 0){
-   # novl_hes = novl_hes +1
-   #  }
-   #  if (Individual_matrix[i,j,4] == -1 & Individual_matrix[i,j,2] == 1){
-   #    novl_conf = novl_conf +1
-   #  }
-   # #
-   #  if (Individual_matrix[i,j,4] == 0 & Individual_matrix[i,j,2] == 0){
-   #    neut_hes = neut_hes +1
-   #  }
-   #  if (Individual_matrix[i,j,4] == 0 & Individual_matrix[i,j,2] == 1){
-   #    neut_conf = neut_conf +1
-   #  } 
-   #  #
-   #  if (Individual_matrix[i,j,4] == 1 & Individual_matrix[i,j,2] == 0){
-   #    confr_hes = confr_hes +1
-   #  }
-   #  if (Individual_matrix[i,j,4] == 1 & Individual_matrix[i,j,2] == 1){
-   #    confr_conf = confr_conf +1
-   #  } 
     
-    
+  
  }#j
 }#i #End of Initialization
 
@@ -255,7 +212,7 @@ init_tot_recov = abs(sum(Individual_matrix[,,3][Individual_matrix[,,3]<0]))/(siz
 starti <- i-1 #assigning name to possible "0" index
 if (starti == 0){
   newstarti = sizei#currently name of matrix length
-  starti <- newstarti #start is now end value instead of 0
+  starti <- newstarti #starti is now end value instead of 0
 }
 
 endi <- i+1 #end: #assigning name to possible "end+1" index
@@ -277,149 +234,70 @@ if (endj == sizej +1){#"end" +1; when
 }
 
 
-
-
 ##Post-initialization Timesteps
-for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
+for (t in 1:NumTimesteps){
  
-  #Collects swaps
- # collect_conf = 0 #collecting A+ person1 swaps w/ homophily
- # collect_hes = 0 # collecting A- person1 swaps w/ homophily
- # rndmcollect_conf = 0 #collecting A+ person1 swaps (random)
- # rndmcollect_hes = 0# collecting A- person1 swaps (random)
-
-###Printing to pdf of GIF###
-
-  #saveGIF({
- 
- 
- # p <- 
-    # corrplot(Individual_matrix[,,4], method = "shade", col.lim = c(-1,1), col = c("white","tan", "maroon" ),
-    #          bg="lightblue", addgrid.col = "black", outline = TRUE, is.corr = FALSE)
-    # #image(1:sizej, 1:sizei, t(apply(Individual_matrix[,,1],2,rev)))#coord_flip()t(apply(x, 2, rev))
-    # title(main="Graph simulation example", sub=paste("Time = ", t), cex.main = 2, cex.sub = 2)
- # col<- colorRampPalette(c("red", "white", "blue"))(256)
- # heatmap(Individual_matrix[,,4], Rowv = NA, Colv = NA, col = col)
-
+#Adjusting matrix for image
  rotate <- function(x) t(apply(x, 2, rev))
  rotate2 <- function(x) (apply(x, 2, rev))
- fgh <-rotate(Individual_matrix[,,3])#need to flip matrix for image()
+ fgh <-rotate(Individual_matrix[,,3])
 
-#  ###Making Matrix image for pdf and movie
-#   #fp <- file.path(dir_out, filename = paste0(t, ".png"))
-#    fp <- file.path(dir_out, filename = paste0(Sys.Date(),t, ".png"))#,#Check#used
-#   # png(filename = fp)
-#   #  png(file = paste(t, ".png"))
-# png(fp)#, height=400, width=400 #used
-# ##used
-# corrplot(Individual_matrix[,,3], method = "shade", col.lim = c(-1,1), col = c("white","tan", "maroon" ),
-# bg="lightblue", addgrid.col = "black", outline = TRUE, is.corr = FALSE)
-# image(1:sizej,1:sizei,fgh,col = c("grey", "red", "black"), axes= FALSE)#
-# #image(1:sizej,1:sizei,fgh, col = hcl.colors(3, palette = "viridis"), axes= FALSE)
-# axis(2, 1:sizej,rev(1:sizei))#left axis i(row) y
-# axis(3, 1:sizej,1:sizej)#top j (column) x
-# title(main="Graph simulation example", sub=paste("Time = ", t), cex.main = 1, cex.sub = 1)
-
- #col=min(Individual_matrix[,,3]):max(Individual_matrix[,,3]
-#}, interval = 1, movie.name = "novelvax.gif", ani.width = 1000, ani.height = 1000)
-
- #print(p)
- #dev.off()
-
-    
+ 
 ###Impact of influencer###
    
-  #Initializing follower array. New followers are chosen each timestep
- # followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
- # followers_hes <- array(data = 0, c(1,2))  
+ #Initializing follower array. New followers are chosen each timestep
+ followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
+ followers_hes <- array(data = 0, c(1,2))
 
-  #if (influencer[2] > 0){
- 
- if (influencer_conf[2] == 0){# If influencer has no reach
-             followers_conf <- array(data = 0, c(1,2))
-                } else {
+  if (influencer_conf[2] == 0){# If the confident influencer has no reach (no followers)
+             followers_conf <- array(data = 0, c(1,2))#...keep array empty
+                } else { # else scan the population to fill influencer array
 
- # for (scan in 1:round(influencer_conf[2]*1.5)){#1 to number of specified number of followers +extra
-    for (scan in 1:influencer_conf[2]){
+     for (scan in 1:influencer_conf[2]){#Creates list of influencer_conf followers
         
-    follower_conf_i=round(runif(1,1,sizei)) #followers[scan, 1]= round(runif(1,1,sizei))#probably not working with rbind
-    follower_conf_j=round(runif(1,1,sizej)) #followers[scan, 2]= round(runif(1,1,sizej))
+        #Chooses agents at random
+        follower_conf_i=round(runif(1,1,sizei))
+        follower_conf_j=round(runif(1,1,sizej))
 
 
-# #if all row including i,j is already in followers...no action
+    ##if an agent is already a follower (row with (i,j) is already in list) -- skip agent
      if (any(apply(followers_conf, 1, function(x) all(x == c(follower_conf_i,follower_conf_j))))== TRUE){
       
-     #if (apply(followers_conf, 1, function(x) all(x == c(follower_conf_i,follower_conf_j)))){
-       
-#     ##all(x == c(follower_i,follower_j)--> (T or F) are all the values in x in c()in the same order?
-      ##apply() --> apply function to 1 (rows) in followers (vector) [go through followers and see of any rows match c() exactly]
-      ##any() ---> (T or F) is anything specified in () TRUE (if true(there's a match somewhere) do nothing)
-##do I need apply
- #     #print(c(follower_i,follower_j)) #next #scan = scan ## How do I get it to loop until correct???
-
- ##Alt: if (any(apply(followers[1:(scan-1),], 1, function(x) all(x == followers[scan,])))== TRUE)
- 
-      } else {
-          #if not already in followers (so if above gives FALSE (nothing matches)), add to list
-
-           followers_conf <- rbind(followers_conf,c(follower_conf_i,follower_conf_j))# should this be c(i,j)
+       } else {
+         
+          #if not already in followers (gives FALSE), add to list
+           followers_conf <- rbind(followers_conf,c(follower_conf_i,follower_conf_j))
             }
  
-    
-    # if (influencer_conf[2] == 0){# If influencer has no reach
-    #   followers_conf <- array(data = 0, c(1,2))
-    # }
-    
-  
-    
-  }## scan #Creates list of influencer_conf followers
+      }## scan end
  
-    #print(followers_conf)
                   
    }#if else influencer_conf[2] == 0 
                   
                   
- 
- if (influencer_hes[2] == 0){# If influencer has no reach
+ # Repeating process for hesitant influencer 
+ if (influencer_hes[2] == 0){# If influencer has no reach, keep array empty
       followers_hes <- array(data = 0, c(1,2))
     }else{
   
-  #for (scan2 in 1:round(influencer_hes[2]*1.5)){#1 to number of specified number of followers +extra
+    for (scan2 in 1:influencer_hes[2]){#Creates list of influencer_hes followers
 
-    for (scan2 in 1:influencer_hes[2]){
-
-    follower_hes_i=round(runif(1,1,sizei)) #followers[scan, 1]= round(runif(1,1,sizei))#probably not working with rbind
-    follower_hes_j=round(runif(1,1,sizej)) #followers[scan, 2]= round(runif(1,1,sizej))
+    follower_hes_i=round(runif(1,1,sizei)) 
+    follower_hes_j=round(runif(1,1,sizej))
 
 
-    # #if all row including i,j is already in followers...no action
+    # skip agent if already a follower
     if (any(apply(followers_hes, 1, function(x) all(x == c(follower_hes_i,follower_hes_j))))== TRUE){
       
-     # if (apply(followers_hes, 1, function(x) all(x == c(follower_hes_i,follower_hes_j)))==TRUE){
-      
-      #     ##all(x == c(follower_i,follower_j)--> (T or F) are all the values in x in c()in the same order?
-      ##apply() --> apply function to 1 (rows) in followers (vector) [go through followers and see of any rows match c() exactly]
-      ##any() ---> (T or F) is anything specified in () TRUE (if true(there's a match somewhere) do nothing)
-
-      ##Alt: if (any(apply(followers[1:(scan-1),], 1, function(x) all(x == followers[scan,])))== TRUE)
-
     }else {
-      #if not already in followers (so if above gives FALSE (nothing matches)), add to list
-
+      
+      #if not already in followers (above gives FALSE), add to list
       followers_hes <- rbind(followers_hes,c(follower_hes_i,follower_hes_j))# should this be c(i,j)
     }
     
-    # if (influencer_hes[2] == 0){# If influencer has no reach
-    #   followers_hes <- array(data = 0, c(1,2))
-    # }
-    
-    
-      
-  }##scan2 #Creates list of influencer_hes followers
+  }##scan2 end
      
-      # print(followers_hes)
- 
-      }#if else influencer_hes[2] == 0 
+        }#if else influencer_hes[2] == 0 
  
   
 ##Attitude Transition## 
@@ -441,9 +319,9 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       #Cultural Bias (-1, 0, 1); k = 1, 2 or 3
       k = match(Individual_matrix[i,j,4], CulturalBias)
      
-      kk = 0.14  #Weight of Influencer effects #Vector_A[aw]
+      kk = 0.14  #Weight of Influencer effects
    
-     ### Calculate initial probability of changing attitudes for all (i,j)###
+     ### Calculate initial probability of changing attitudes for all confident (i,j)###
         
 ##If agent is Confident     
   if(Individual_matrix[i,j,2]==1){#if agent is confident
@@ -481,7 +359,7 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       #if confident and only following hesitant -> increase prob of change
           if (in_followers_conf ==FALSE & in_followers_hes == TRUE){
             
-            kk = kk_hes
+            #kk = kk_hes
             
             yy <- kk + (1-kk)*prob_of_change
            
@@ -490,13 +368,13 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       #if confident and following both confident and hesitant --> reduce probability of change
           if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
          
-            kk = sum(kk_conf, kk_hes)/2
+            #kk = sum(kk_conf, kk_hes)/2
             
-              yy = (1-kk/2)*(prob_of_change)
+             yy = (1-kk/2)*(prob_of_change)
               
           }
         
-    #if agent follows neither influencer -> no action
+    #if agent follows neither influencer -> no changes to calculated probability
           if (in_followers_conf == FALSE & in_followers_hes == FALSE){
           
               yy <- prob_of_change
@@ -512,7 +390,7 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
       
       }#end: if confident
       
-  ### Calculate initial probability of changing attitudes for all (i,j)###      
+  ### Calculate initial probability of changing attitudes for all hesitant (i,j)###      
       
 ##If agent is Hesitant    
     if (Individual_matrix[i,j,2]==0){#if hesitant
@@ -538,9 +416,9 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
   #if agent is hesitant and only follows confident -> increase prob of change by some factor determined by kk
         if (in_followers_conf == TRUE & in_followers_hes == FALSE){
           
-            kk = kk_conf
+            #kk = kk_conf
             
-               yy <- kk + (1-kk)*prob_of_change
+              yy <- kk + (1-kk)*prob_of_change
               
                   } #If hesitant and... end
 
@@ -561,14 +439,14 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
                 yy <- (1-kk/2)*(prob_of_change)
             
                   }
-      #if agent follows neither influencer -> no action
+      #if agent follows neither influencer -> changes to calculated probability
           if (in_followers_conf == FALSE & in_followers_hes == FALSE){
                    
            yy <- prob_of_change
            
            }
 
-       # adding stochasticity
+       # adding a chance that individual changes mind opposed to calculated probability 
          individual_prob=runif(1)
         
         if(yy > individual_prob){#prob_of_change >
@@ -606,14 +484,7 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
           
           if (k==2){#if neutral bias
 
-           # slopes <-0.9 #essentially max probability
-           # b <-0.001
-           # 
-           #   prob_of_vacc2 = slopes*(SumOfVaccinated/8) + b
-               #prob_of_vacc2 = 0.75 #True neutral
-               #prob_of_vacc2 = -0.0003125*(SumOfVaccinated)^2 + 0.06375*SumOfVaccinated + 0.5
-               #
-            prob_of_vacc2 = 0.05*(SumOfVaccinated) + 0.55
+              prob_of_vacc2 = 0.05*(SumOfVaccinated) + 0.55
             
           }
           
@@ -636,15 +507,7 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
         
         if (k==2){#if neutral bias
 
-          # slopes <-0.5
-          # b <-0.001
-          # 
-          # prob_of_vacc2 = (slopes*(SumOfVaccinated/8) + b)/2
-           #prob_of_vacc2 = 0.25 #True neutral
-           #
-           #prob_of_vacc2 = 0.003125*(SumOfVaccinated)^2 + 0.025*SumOfVaccinated + 0.1
-           
-           prob_of_vacc2 = 0.05*(SumOfVaccinated) + 0.05
+          prob_of_vacc2 = 0.05*(SumOfVaccinated) + 0.05
            
         }
         
@@ -657,18 +520,14 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
         } #end if hesitant
         
         
-        #09/13/2023
-        if (Individual_matrix[i,j,4] == 0){Comp_prob_of_vacc = (prob_of_vacc*(Prob_of_infect))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}
-        if (Individual_matrix[i,j,4] == -1){Comp_prob_of_vacc = (prob_of_vacc*(Infected_Disease_threshold))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}
-        if (Individual_matrix[i,j,4] == 1){Comp_prob_of_vacc = 0}
+        #Calculating final probability of vaccination for timesteps >15
+        #Vaccination for timesteps >15 can vary based on agent disease state
+        if (Individual_matrix[i,j,4] == 0){Comp_prob_of_vacc = (prob_of_vacc*(Prob_of_infect))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}#Completely susceptible
+        if (Individual_matrix[i,j,4] == -1){Comp_prob_of_vacc = (prob_of_vacc*(Infected_Disease_threshold))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}#Recovered (Previously Infected)
+        if (Individual_matrix[i,j,4] == 1){Comp_prob_of_vacc = 0} #Currently infected
 
-        
-        #Comp_prob_of_vacc = (prob_of_vacc*(Disease_threshold))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)
-        #Comp_prob_of_vacc = (prob_of_vacc*(Prob_of_infect))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold) #Might want to make prob of infect specific
-       
-         #(Prob of Vacc_D * Prob of Vacc_V)
-         #
-        if (t<15){Comp_prob_of_vacc <- Comp_prob_of_vacc*(t/20)} #9/22/2023
+        # Calculation vaccination probability for timestep < 15 (Dampen early vaccination uptake)
+        if (t<15){Comp_prob_of_vacc <- Comp_prob_of_vacc*(t/20)}
         
         individual_prob = runif(1)
         
@@ -677,19 +536,18 @@ for (t in 1:NumTimesteps){#from initial: timestep 1 is initial
             Individual_matrix[i,j,1]=1
           } 
         
-        }#if V-
+        }#if unvaccinated end
       
-      }#j
-  }#i 
+      }#j end
+  }#i end
   
 
-##Disease Spread##
- #Exposed individuals are at risk of contracting the disease
-  exposed = array(data = 0, c(1,2)) #
-  #contagious = array(data = 0, c(1,2))
-  contagious = array(data = 0 , c(1,3))
-  # Tcontagious = array(data = 0, c(1,3))
-  
+##Disease Transmission##
+
+ #Initializing exposed and contagious arrays 
+ exposed = array(data = 0, c(1,2))#Exposed individuals are at risk of contracting the disease
+ contagious = array(data = 0 , c(1,3)) #Contagious individual have the disease
+ 
 for (i in 1:sizei){
   for (j in 1:sizej){
     
@@ -699,12 +557,10 @@ for (i in 1:sizei){
   
        }
     
-    #print(Individual_matrix[,,3])
-    
-    if (Individual_matrix[i,j,3]==0 || Individual_matrix[i,j,3]==-1 ){# if not infected
+    if (Individual_matrix[i,j,3]==0 || Individual_matrix[i,j,3]==-1 ){# if no disease (never infected or recovered)
       
       
-         if (SumOfInfected >0){# Ediited from SumOfInfected2 4-24-23
+         if (SumOfInfected >0){
         
               exposed <- rbind(exposed,c(i,j))
              }
@@ -714,33 +570,27 @@ for (i in 1:sizei){
   
 if (length(exposed[,1])>1){
   
-  for (h in 2:length(exposed[,1])){#go through exposed ####h caused problem with 2X2 matrix
+  for (h in 2:length(exposed[,1])){#going through exposed
   
   random_number2=runif(1)
   
-  # #if not vaccinated --> prob of being infected
-  # if (Individual_matrix[exposed[h,1],exposed[h,2],1]==0&random_number2<Disease_threshold){
-  #   Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
-  #    }
-  # #if vaccinated--> prob of being infected
-  # if (Individual_matrix[exposed[h,1],exposed[h,2],1]==1&random_number2<Vaccinated_Disease_threshold){
-  #   Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
-  # }
-  
-  ## if not vaccinated --> prob of being infected
+## If not vaccinated --> chance of being infected ##
  if (Individual_matrix[exposed[h,1],exposed[h,2],1]==0){
- # not vaccinated but previously infected
+   
+ # if not vaccinated but previously infected
  if (Individual_matrix[exposed[h,1],exposed[h,2],3]== -1 & random_number2 < Infected_Disease_threshold){
-   Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
+   
+   Individual_matrix[exposed[h,1],exposed[h,2],3]=1 # then infect
  }
- # not vaccinated and susceptible
+   
+ # if not vaccinated and completely susceptible
  if (Individual_matrix[exposed[h,1],exposed[h,2],3]== 0 & random_number2 < Prob_of_infect){
    Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
- }
+    }
  }
   
   
-## if vaccinated
+## If Vaccinated ##
   if (Individual_matrix[exposed[h,1],exposed[h,2],1]==1){
   #if vaccinated and previously infected
   if (Individual_matrix[exposed[h,1],exposed[h,2],3]==-1 & random_number2 < (Vaccinated_Disease_threshold*Infected_Disease_threshold)){
@@ -749,109 +599,83 @@ if (length(exposed[,1])>1){
   
   #if vaccinated and susceptible
   if (Individual_matrix[exposed[h,1],exposed[h,2],3]==0 & random_number2 < Vaccinated_Disease_threshold){
-   Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
-  }#if vacc and suscep
+   
+    Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
+  
+    }#if vacc and suscep
    }# if vacc
-}
+  }
 }#end of going through exposed 
 
-#print(contagious)
+Tcontagious <- rbind(Tcontagious,contagious)#list of contagious individuals
 
-# print(length(contagious[,1]))
-#Tcontagious <- contagious
-Tcontagious <- rbind(Tcontagious,contagious)
-
-#print(length(Tcontagious))# 
-#print(nrow(Tcontagious))
-# 
-#Reset those contagious
-
+#Reassign contagious agents (agents are contagious for 2 timesteps)
 for (xx in 1: nrow(Tcontagious)){
   
-  if (Tcontagious[xx, 3] == t-2){ #if ((t %% 5)== 0 ){
-  #print(c(xx, t, t-2))
-    Individual_matrix[Tcontagious[xx,1],Tcontagious[xx,2],3]= -1#0
+  if (Tcontagious[xx, 3] == t-2){
+  
+    Individual_matrix[Tcontagious[xx,1],Tcontagious[xx,2],3]= -1 #Recovered assignment
    
-    #Tcontagious[xx, ] <- 0
-    #newTcontagious <- Tcontagious[-xx, ] 
-    
     }
   
-  } #end of reset
+  } #end of reassign
  
-#Tcontagious <- newTcontagious
-  
+
   ########choose people to swap positions
-    for (move in 1:round(sizei*sizej/10)){# round unnecessary (9.5 -> 9)
+    for (move in 1:round(sizei*sizej/10)){
     
-      #check prev_move
-      # if (any(apply(prev_move, 1, function(x) all(x == c(prev_move_i,prev_move_j))))== TRUE){ nothing else{swap algorithm}}
     #choose random first person
-    
-    choosei1=round(runif(1,1,sizei))### random w/out replacement???
+    choosei1=round(runif(1,1,sizei))
     choosej1=round(runif(1,1,sizej))
     person1=Individual_matrix[choosei1,choosej1,]
 
     
     # #choose random second person
-    # 
     choosei2=round(runif(1,1,sizei))
     choosej2=round(runif(1,1,sizej))
     person2=Individual_matrix[choosei2,choosej2,]
     
     
-    #decide if they swap
+    #If set to random swap
     if (Homophily==0){# No Homophily- Random Swapping (set at beginning)
      
       swap_random1 = runif(1)
       swap_random2 = runif(1)
-      #print(c(swap_random1,swap_random2))
       
-      if (swap_random1 < swap_random2){#or set threshold????
+      if (swap_random1 < swap_random2){
       
-      #some probability they switch
+      #They swap positions at some probability
       Individual_matrix[choosei1,choosej1,]=person2
       Individual_matrix[choosei2,choosej2,]=person1
       
-      if (Individual_matrix[choosei1,choosej1,2]== 1){
-         collect_conf = collect_conf+1 #rndmcollect_conf = rndmcollect_conf + 1}
-      }
-      if (Individual_matrix[choosei1,choosej1,2]== 0){
-        collect_hes = collect_hes+1 #rndmcollect_hes = rndmcollect_hes + 1}
-      }
-      # Individual_matrix[choosei[1],choosej[1],]=person2
-      # Individual_matrix[choosei[2],choosej[2],]=person1
-      # 
         }
     }
-    
-    if (Homophily==1){# Biased Movement
-      #test your neighbors for matching beliefs, if person 2 neighbors have greater match to you, switch
-      #Will need to redefine choosei1-1 etc. for edge cases
+  
+#If set to attitude based relocation (non-random swapping)
+    if (Homophily==1){# Attitude based Movement: check potential position for matching beliefs, if the neighbors share attituted, likely to switch
       
-#################      
-      # ## For Edges. Need to Check ##     
-
-      startchoosei1 <- choosei1-1 #"end + 1" in R?
+    
+    #Defining Edge Cases    
+      startchoosei1 <- choosei1-1 
         if (startchoosei1 == 0){
         newstartchoosei1 = sizei
         startchoosei1 <- newstartchoosei1
       }
       
-      startchoosei2 <- choosei2-1 #"end + 1" in R?
+      startchoosei2 <- choosei2-1
         if (startchoosei2 == 0){
         newstartchoosei2 = sizei
         startchoosei2 <- newstartchoosei2
       }
 
-      endchoosei1 <- choosei1+1 #end
-      if (endchoosei1 == sizei+1){#"end" +1; when
+      endchoosei1 <- choosei1+1
+      if (endchoosei1 == sizei+1){
         newendchoosei1 = 1
         endchoosei1 <- newendchoosei1
       }
       
-      endchoosei2 <- choosei2+1 #end
-      if (endchoosei2 == sizei+1){#"end" +1; when
+      endchoosei2 <- choosei2+1
+      if (endchoosei2 == sizei+1){
         newendchoosei2 = 1
         endchoosei2 <- newendchoosei2
       }
@@ -869,13 +693,13 @@ for (xx in 1: nrow(Tcontagious)){
       }
       # 
       endchoosej1 <- choosej1+1
-      if (endchoosej1 == sizej +1){#"end" +1; when
+      if (endchoosej1 == sizej +1){
         newendchoosej1 = 1
         endchoosej1 <- newendchoosej1
       }
       
       endchoosej2 <- choosej2+1
-      if (endchoosej2 == sizej +1){#"end" +1; when
+      if (endchoosej2 == sizej +1){
         newendchoosej2 = 1
         endchoosej2 <- newendchoosej2
       }

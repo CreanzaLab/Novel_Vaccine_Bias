@@ -200,7 +200,6 @@ if (endj == sizej +1){
 ##Post-initialization Timesteps
 for (t in 1:NumTimesteps){
 
-    
 ### Impact of influencer ###
 
   #Initializing follower array. New followers are chosen each timestep
@@ -222,9 +221,9 @@ for (t in 1:NumTimesteps){
       if (any(apply(followers_conf, 1, function(x) all(x == c(follower_conf_i,follower_conf_j))))== TRUE){
   
       } else {
-        #if not already in followers (so if above gives FALSE), add to list
         
-        followers_conf <- rbind(followers_conf,c(follower_conf_i,follower_conf_j))
+        #if not already in followers (above gives FALSE), add to list
+         followers_conf <- rbind(followers_conf,c(follower_conf_i,follower_conf_j))
       }
       
       
@@ -247,8 +246,8 @@ for (t in 1:NumTimesteps){
       if (any(apply(followers_hes, 1, function(x) all(x == c(follower_hes_i,follower_hes_j))))== TRUE){
         
       }else {
-        #if not already in followers (so if above gives FALSE (nothing matches)), add to list
         
+        #if not already in followers (above gives FALSE), add to list
         followers_hes <- rbind(followers_hes,c(follower_hes_i,follower_hes_j))
       
     }##scan2 end
@@ -278,7 +277,7 @@ for (t in 1:NumTimesteps){
       
       kk = 0.14 #Weight of Influencer effects
       
-  ### Calculate initial probability of changing attitudes for all (i,j)###
+  ### Calculate initial probability of changing attitudes for all confident (i,j)###
  
 ##If agent is Confident     
   if(Individual_matrix[i,j,2]==1){#if agent is confident
@@ -339,7 +338,7 @@ for (t in 1:NumTimesteps){
         
       }#end: if confident
 
-  ### Calculate initial probability of changing attitudes for all (i,j)###
+  ### Calculate initial probability of changing attitudes for all hesitant (i,j)###
       
 ##If agent is Hesitant
   if (Individual_matrix[i,j,2]==0){#if hesitant
@@ -459,21 +458,21 @@ for (t in 1:NumTimesteps){
         } #end if hesitant
         
        #Calculating final probability of vaccination for timesteps >15
-        if (Individual_matrix[i,j,4] == 0){Comp_prob_of_vacc = (prob_of_vacc*(Prob_of_infect))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}
-        if (Individual_matrix[i,j,4] == -1){Comp_prob_of_vacc = (prob_of_vacc*(Infected_Disease_threshold))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}
-        if (Individual_matrix[i,j,4] == 1){Comp_prob_of_vacc = 0}
+       #Vaccination for timesteps >15 can vary based on agent disease state
+        if (Individual_matrix[i,j,3] == 0){Comp_prob_of_vacc = (prob_of_vacc*(Prob_of_infect))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}#Completely susceptible
+        if (Individual_matrix[i,j,3] == -1){Comp_prob_of_vacc = (prob_of_vacc*(Infected_Disease_threshold))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}#Recovered (Previously Infected) 
+        if (Individual_matrix[i,j,3] == 1){Comp_prob_of_vacc = 0}#Currently infected
         
-        # Calculation vaccination probability for timestep < 15      
+        # Calculation vaccination probability for timestep < 15 (Dampen early vaccination uptake)
         if (t<15){Comp_prob_of_vacc <- Comp_prob_of_vacc*(t/20)} 
         
         individual_prob = runif(1)
         
-        # 
         if(individual_prob < Comp_prob_of_vacc){
-          Individual_matrix[i,j,1]=1
+        Individual_matrix[i,j,1]=1
                  }
         
-      }#if unvaccianted end
+      }#if unvaccinated end
       
     }#j end
   }#i end
@@ -481,18 +480,17 @@ for (t in 1:NumTimesteps){
 
 ##Disease Transmission##
 
-  #Initializing exposed ans contagious arrays 
-  exposed = array(data = 0, c(1,2))
-  
-  contagious = array(data = 0 , c(1,3))
+  #Initializing exposed and contagious arrays 
+  exposed = array(data = 0, c(1,2)) #Exposed individuals are at risk of contracting the disease
+  contagious = array(data = 0 , c(1,3)) #Contagious individual have the disease
  
   
 for (i in 1:sizei){
   for (j in 1:sizej){
     
-    if (Individual_matrix[i,j,3]==1){# if has the disease 
+    if (Individual_matrix[i,j,3]==1){# if infected 
      
-       contagious <- rbind(contagious,c(i,j,t))#collect in contagious
+       contagious <- rbind(contagious,c(i,j,t))#collects position (i,j) and infected timestep
   
        }
     
@@ -506,17 +504,20 @@ for (i in 1:sizei){
     }#j
   }#i #End of collecting exposed and contagious
   
+  
 if (length(exposed[,1])>1){
   
-  for (h in 2:length(exposed[,1])){#go through exposed 
+  for (h in 2:length(exposed[,1])){#going through exposed array
   
   random_number2=runif(1)
   
-  ## if not vaccinated --> prob of being infected
+  ## If not vaccinated --> chance of being infected##
  if (Individual_matrix[exposed[h,1],exposed[h,2],1]==0){
- # not vaccinated but previously infected
+   
+ # if not vaccinated but previously infected
     if (Individual_matrix[exposed[h,1],exposed[h,2],3]== -1 & random_number2 < Infected_Disease_threshold){
-   Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
+   
+      Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
                             }
  # not vaccinated and completely susceptible
  if (Individual_matrix[exposed[h,1],exposed[h,2],3]== 0 & random_number2 < Prob_of_infect){
@@ -524,24 +525,26 @@ if (length(exposed[,1])>1){
    }
  }
   
-## if vaccinated
+## If Vaccinated ##
   if (Individual_matrix[exposed[h,1],exposed[h,2],1]==1){
   #if vaccinated and previously infected
   if (Individual_matrix[exposed[h,1],exposed[h,2],3]==-1 & random_number2 < (Vaccinated_Disease_threshold*Infected_Disease_threshold)){
     Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
   }
   
-  #if vaccinated and susceptible
+  #If vaccinated and completely susceptible
   if (Individual_matrix[exposed[h,1],exposed[h,2],3]==0 & random_number2 < Vaccinated_Disease_threshold){
-   Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
-  }#if vacc and suscep
+   
+    Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
+ 
+     }#if vacc and suscep
    }# if vacc
-}
+  }
 }#end of going through exposed 
 
 Tcontagious <- rbind(Tcontagious,contagious) #list of contagious individuals
 
-#Reset those contagious (agents are contagious for 2 timesteps)
+#Reassign contagious agents (agents are contagious for 2 timesteps)
 for (xx in 1: nrow(Tcontagious)){
   
   if (Tcontagious[xx, 3] == t-2){ 
@@ -550,7 +553,7 @@ for (xx in 1: nrow(Tcontagious)){
     
     }
   
-  } #end of reset
+  } #end of reassign
  
 
 ##Choose agents to swap positions
@@ -561,7 +564,6 @@ for (xx in 1: nrow(Tcontagious)){
     choosej1=round(runif(1,1,sizej))
     person1=Individual_matrix[choosei1,choosej1,]
 
-    
     #choose random second person
     choosei2=round(runif(1,1,sizei))
     choosej2=round(runif(1,1,sizej))
@@ -576,17 +578,18 @@ for (xx in 1: nrow(Tcontagious)){
       
       if (swap_random1 < swap_random2){
       
-      #some probability they switch
+      #They swap positions at some probability
       Individual_matrix[choosei1,choosej1,]=person2
       Individual_matrix[choosei2,choosej2,]=person1
       
       }
     } #if Homophily = 0
+  
     
-    #If set to attitude based relocation
-    if (Homophily==1){# Biased Movement
+  #If set to attitude based relocation (non-random swapping)
+    if (Homophily==1){## Attitude based Movement: check potential position for matching beliefs, if the neighbors share attituted, likely to switch
       
-      #Setting boundary conditions
+  #Defining Edge Cases
       startchoosei1 <- choosei1-1 
         if (startchoosei1 == 0){
         newstartchoosei1 = sizei
@@ -634,7 +637,8 @@ for (xx in 1: nrow(Tcontagious)){
         newendchoosej2 = 1
         endchoosej2 <- newendchoosej2
       }
-      
+     
+  #Calculate the number of      
       SumOfPostitives_person1=Individual_matrix[startchoosei1,startchoosej1,2]+Individual_matrix[startchoosei1,choosej1,2]+Individual_matrix[startchoosei1,endchoosej1,2]+
         Individual_matrix[choosei1,startchoosej1,2]+Individual_matrix[choosei1,endchoosej1,2]+
         Individual_matrix[endchoosei1,startchoosej1,2]+Individual_matrix[endchoosei1,choosej1,2]+Individual_matrix[endchoosei1,endchoosej1,2]
