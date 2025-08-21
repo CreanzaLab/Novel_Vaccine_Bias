@@ -29,6 +29,14 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
+### For computer
+# #Folders for movie images "novelvax" and graph pdfs "novelvaxpdf"
+# dir_out <- file.path()#
+# #dir.create(dir_out, recursive = TRUE)
+# dir_out_pdf <- file.path()#
+# #dir.create(dir_out_pdf, recursive = TRUE)
+
+
 Heat 167 
 
 # # collect = array(data =0)
@@ -118,3 +126,167 @@ Before Impact of inflencer
 
  #print(p)
  #dev.off()
+ 
+ collect_conf = collect_conf+1 #collect counting swaps?? (A+)person1 or  A- person2
+         #print(c("h",collect))
+         
+         #if (Individual_matrix[choosei1,choosej1, 2]==1 & Individual_matrix[choosei2,choosej2, 2]==1){}#"do nothing"added 4-21-23
+         
+          collect_hes = collect_hes+1 # collect2(A- swaps)
+            # print(c("f",collect2))
+            
+#if (Individual_matrix[choosei1,choosej1, 2]==0 & Individual_matrix[choosei2,choosej2, 2]==0){} 
+
+ #prev_moved[,,] <- c(person1, person2) 
+ 
+ #print(VACC[t])
+
+#ATT_run[xg] <- ATT
+
+#counting Timesteps to Herd Immunity
+# if (VACC[t] >= 0.7){
+# 
+#   # Herd_time[w,t] <- t
+#   # print(VACC[t])
+# 
+#   }
+#
+#print(c(g,Herd_time))
+
+
+  
+
+
+# for (Individual_matrix[,,4]== 0){}
+# for (Individual_matrix[,,4]== 1){}
+
+#print(collect)
+collect_array[t] <- collect_conf#/(collect+collect2)#(sizei*sizej)#/100 or /sum of total swaps
+collect2_array[t] <- collect_hes#/(collect+collect2)#(sizei*sizej)
+Totalswaps[t] <- collect_conf + collect_hes
+
+# rndmcllctarr_conf[t] <-rndmcollect_conf #Check: Confident who swap
+# rndmcllctarr_hes[t] <- rndmcollect_hes# Hesitant who swap
+# Totrndmcollect[t] <- rndmcollect_conf + rndmcollect_hes #Total swaps
+
+# print(collect_array)
+# print(collect2)
+
+ #print(ATT)
+   # print("Positive Attitude")
+   # print(sum(Individual_matrix[,,2])/size^2)# 10000 = size^2 for size = 100
+  # print("Vaccinated")
+  # print(sum(Individual_matrix[,,1])/size^2)
+  #TotalVaccinated[t]=sum(Individual_matrix[,,2])
+  #TotalPositiveBelief[t]=sum(Individual_matrix[,,1])
+ 
+ #Tally vaccination status and belief status for conformity, neutral, novelty biased individuals separately
+ 
+  #}, interval = 1, movie.name = "noveldemo.gif", ani.width = 1000, ani.height = 1000)
+   
+ #}
+ 
+ #print(Individual_matrix[,,1])
+#if (Individual_matrix[,,4] == -1){
+  #vaccsum_novelty[t] <- sum(Individual_matrix[,,1])/(sizei*sizej)#size^2
+  # unvaccsum_novelty[t] <- 1-vaccsum_novelty[t]
+  # print(unvaccsum_novelty[t])
+  #print(vaccsum_novelty[t])
+#print(Individual_matrix[,,3])
+#print(VACC)
+
+#}} #a, b
+
+#print(c(g,Herd_time))
+
+ # if (t == NumTimesteps & VACC[t] < .70){
+    #   
+    #   Herd_time <- 'NULL'
+    #   
+    # }
+    
+    # print(c(Vector_A[aw], Vector_B[bw]))
+  # print(c(matrix_V[aw,bw],matrix_A[aw,bw]))
+  
+  
+  ###Plots###
+
+# ##Line###
+# #Confidence freq. overtime
+# 
+# #plot(c(0,Time), c(init_tot_conf,ATT),main = c(paste(as.vector(Vars[[g]]),collapse = " "),paste(c(c("H ",Homophily), c("Vars", g), c("HT ", Herd_time)),collapse = " ")),type= "l", col = "blue",lwd = 2, xlim = c(0, NumTimesteps),xlab = "Time", ylim = 0:1, ylab = "Frequency")
+# plot(c(0,Time), c(init_tot_conf,ATT_run_avg),main = c(paste(as.vector(Vars[[g]]),collapse = " "),paste(c(c("H ",Homophily), c("Vars", g), c("HT ", avg_Herd_time)),collapse = " ")),type= "l", col = "blue",lwd = 2, xlim = c(0, NumTimesteps),xlab = "Time", ylim = 0:1, ylab = "Frequency")
+# #title(main = paste(as.vector(Vars[[g]]),collapse = " "),sub = paste(g))
+# axis(side=1, at=seq(0, NumTimesteps, by=10))
+# axis(side=2, at=seq(0, 1, by= 0.10))
+# abline(h = 0.70, v = avg_Herd_time ,col = 'darkgreen', lwd=2, lty=2)
+# #text(90,0.75, "Herd Immunity")
+# #Confidence Freq,
+# #lines(c(0,Time), c(init_tot_conf,ATT), type= "l", col = "blue",lwd = 2)
+# #lines(c(0,Time), c(init_tot_conf,ATT_run_avg), type= "l", col = "blue",lwd = 2)
+# #Vaccination freq. overtime
+# #lines(c(0,Time), c(init_tot_vacc, VACC), type = "l", lwd = 2)
+# lines(c(0,Time), c(init_tot_vacc, VACC_run_avg), type = "l", lwd = 2)
+# #Disease Occurrence
+# #lines(c(0,Time), c(init_tot_infct,Disease), type = "l", col = "red", lwd = 2)
+# lines(c(0,Time), c(init_tot_infct,DIS_run_avg), type = "l", col = "red", lwd = 2)
+# #Recovered
+# #lines(c(0,Time), c(init_tot_recov,Recovered), type = "l", col = "orange", lwd = 2)
+# lines(c(0,Time), c(init_tot_recov,Recov_run_avg), type = "l", col = "orange", lwd = 2)
+# #legend("top", c("Confidence (A+)", "Vaccination (V+)", "Disease (D+)", "Recovered (D-)"), fill = c("blue","black","red", "orange"))
+# #dev.off
+
+
+
+#}#g #run
+ 
+  # ATT_run[run,] <- ATT
+
+#####
+#image(matrix_A, col = colorRampPalette(c("blue", "white", "red"))(100), xlab = "Columns", ylab = "Rows")
+#  pdf(file.path(dir_out_pdf,paste("AvgHeatmap_seed",seed,"g",g,"NumTimesteps",NumTimesteps,"sizei",sizei,"sizej",sizej,"Homophily",Homophily,"runend",runend,".pdf",sep="_")),height=9, width=8.2)#saves file as "noveltest.pdf"
+#  par(mfrow=c(2,2))#), mar=c(2,5,5,2) + 0.1)
+
+#my_palette2 <- colorRampPalette(c("#FFFFFF", "#FF0000")) #Red
+
+
+# legend(grconvertX(0.5, "device"), grconvertY(1, "device"),
+#        legend = seq(0, 1, 0.1), fill = rev(heat.colors(my_palette2(100))), xpd = NA)
+# legend("topright", legend = seq(0, 1, 0.1), fill = rev(heat.colors(my_palette2(100))), bty = "n", title = "Value")
+
+#imagePlot(rotate2(matrix_A), col = my_palette(100), zlim=c(0,1), add=TRUE)#cm.colors(256)
+#imagePlot(rotate2(matrix_V), col = my_palette2(100), zlim=c(0,1), add=TRUE)#cm.colors(256)
+
+#image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="Infl_Reach_A-", xlab="Influ_Reach_A+")#cm.colors(256)
+#image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="Probability of Infection (Susceptible)", xlab="Probability of Infection (Vaccinated)")#cm.colors(256)
+
+#axis(3, at=seq(0,1, length=length(Vector_A)), labels=colnames(matrix_A), lwd=0, pos=1.15)
+
+#legend("topright", legend = seq(0, 1, 0.1), fill = rev(heat.colors(my_palette2(100))), bty = "n", title = "Value")
+#
+#
+
+#dev.off()
+#
+
+# #
+#
+# ## list file names and read in
+# imgs <- list.files(dir_out, full.names = TRUE)
+# img_list <- lapply(imgs, image_read)
+# 
+# ## join the images together
+# img_joined <- image_join(img_list)
+# 
+# ## animate at 2 frames per second
+# img_animated <- image_animate(img_joined, fps = 4)
+# 
+# ## view animated image
+# img_animated
+# 
+# ## save to disk
+# image_write(image = img_animated,
+#             file.path(dir_out,"novelvax42023.gif")) #path = "novelvax.gif")
+# 
+# #dev.off()
+# # # # #

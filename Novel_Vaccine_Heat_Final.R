@@ -39,7 +39,7 @@ library(magick)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-library(gganimate)
+#library(gganimate)
 library(corrplot)
 library(fields)
 
@@ -53,15 +53,8 @@ dir_out <- "NovelVaccineOut"
 dir_out_pdf <- "NovelVaccineOutPdf"
 
 
-### For computer
-# #Folders for movie images "novelvax" and graph pdfs "novelvaxpdf"
-# dir_out <- file.path()#
-# #dir.create(dir_out, recursive = TRUE)
-# dir_out_pdf <- file.path()#
-# #dir.create(dir_out_pdf, recursive = TRUE)
-
 Vars = template_list #List of parameters combinations, varying by bias, used for testing
-BiasVars = c(1, 11, 62, 63) #Specified rows from Vars
+BiasVars = c(12, 23, 30, 36, 37, 38, 60, 61, 62)#c(1, 11, 62, 63) #Specified rows from Vars
 
 for (xg in 1:length(BiasVars)){
 
@@ -71,6 +64,7 @@ NumTimesteps = 100 #Number of timesteps
 sizei <-40
 sizej <-25
 Homophily <- 1 #== 1 if homophily biases movements; 0 if random movements
+per_move = 10 #percent of population relocating
 
 runend = 10 #Number of runs
   
@@ -79,7 +73,8 @@ g <- BiasVars[xg] #Row number in Vars
 print(g) #used for progress tracking
 
 #pdf
-outname <- paste("927_AvgHtmp_kk_conf_kk_hes",seed,"g2",g, "move", runend, "Homophily", Homophily,sep="_")
+#outname <- paste("815_AvgHtmp_kk_conf_kk_hes",seed,"g2",g, "move", runend, "Homophily", Homophily,sep="_")
+outname <- paste("815_AvgHtmp_Prob_of_infect_Vacc_Dis_thres",seed,"Vars",g, "move", per_move, "Homophily", Homophily,sep="_")
 pdf(file.path(dir_out_pdf,paste0(outname,".pdf")),height=9, width=8.2)#saves file as "noveltest.pdf"
 par(mfrow=c(2,2))
 
@@ -94,13 +89,13 @@ par(mfrow=c(2,2))
   for (aw in 1:length(Vector_A)){ #For graphing: aw- y label bw x label
     for (bw in 1:length(Vector_B)){
     
-      #print(c(aw,bw)) For progress tracking
+      print(c(aw,bw)) #For progress tracking
   
   ### Heatmap  Tests 
       
       #test_name <- 1 # Probability of Infection vs Vaccinated Infection Probability
-       # Prob_of_infect <- Vector_A[aw]
-       # Vaccinated_Disease_threshold <- Vector_B[bw]
+      Prob_of_infect <- Vector_A[aw]
+      Vaccinated_Disease_threshold <- Vector_B[bw]
     
     # #test_name <- 2 # Hesitancy Influencer (Trait) vs Confident Influencer (Trait)
        # influencer_hes <- c(0,round(Vector_A[aw]*(sizei*sizej))) #Change one of these numbers
@@ -112,9 +107,9 @@ par(mfrow=c(2,2))
       #OR
       #Disease_threshold = Vector_B[bw]
     
-      ##test_name <- 4 
-      kk_conf <- Vector_A[aw] #Confident Influencer weight
-      kk_hes <- Vector_A[bw]  #Hesitant Influencer weight
+      # ##test_name <- 4 
+      # kk_conf <- Vector_A[aw] #Confident Influencer weight
+      # kk_hes <- Vector_A[bw]  #Hesitant Influencer weight
       
 #Arrays for collecting Confidence, Vaccination, Infected and Recovered frequencies over time per run 
  
@@ -134,12 +129,17 @@ par(mfrow=c(2,2))
   #g <- BiasVars[xg]
   #plot(NA, NA,main = c(paste(as.vector(Vars[[g]]),collapse = " "),paste(c(c("H ",Homophily), c("Vars", g),c("HT ", avg_Herd_time)),collapse = " ")),xlim = c(0, NumTimesteps),xlab = "Time", ylim = 0:1, ylab = "Frequency")
   
+  # Influencer specifications - set each run
+  # c(attitude state, reach from specified parameter list*population size)   
+  influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Change one of these numbers #Does it matter where this is
+  influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
+  
 for (run in 1:runend){
  
-# Influencer specifications - set each run
-# c(attitude state, reach from specified parameter list*population size)   
-influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Change one of these numbers
-influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
+# # Influencer specifications - set each run
+# # c(attitude state, reach from specified parameter list*population size)   
+# influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Change one of these numbers #Does it matter where this is
+# influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
 
 # #Initializing follower array. New followers are chosen each timestep
 # followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
@@ -155,9 +155,9 @@ Tcontagious = array(data = 0) #
 
 Individual_matrix=array(data=0, dim=c(sizei,sizej,4) )
 
-#addvars = array(data = 0, dim = c(size[1],2))#collects the final V and A for each line in var matrix
-addvars <- list()
-addvarslist <- array(data= 0, dim = c(10,2))
+# #addvars = array(data = 0, dim = c(size[1],2))#collects the final V and A for each line in var matrix
+# addvars <- list()
+# addvarslist <- array(data= 0, dim = c(10,2))
 
 #g <- random_integers[rn] # row number in vars indexed by rn
   #print(g)
@@ -170,11 +170,11 @@ addvarslist <- array(data= 0, dim = c(10,2))
 #Vars = c(0.1, 0.25, 0.26, 0.17, B-, B0, B+, 0.48, 0.28, 0.19)
 Attitude_threshold = Vars[[g]][1]#Confidence Frequency; Vars[g,1]
 Disease_threshold = Vars[[g]][2]#Infected;Vars[g,2]
-Vaccinated_Disease_threshold = Vars[[g]][3]#Infection Probability if vaccinated; Vars[g,3]
+#Vaccinated_Disease_threshold = Vars[[g]][3]#Infection Probability if vaccinated; Vars[g,3]
 Infected_Disease_threshold = Vars[[g]][4]#Infection probability if previously infected; Vars[g,4]
 CulturalBias <- c(-1, 0 , 1) #(novelty, neutral, conform)
 BiasProb <- c(Vars[[g]][5],Vars[[g]][6],Vars[[g]][7])#Bias Proportions; Vars[g,5], Vars[g,6], Vars[g,7]
-Prob_of_infect = Vars[[g]][10]# Probability of infection if susceptible (never infected/unvaccinated)
+#Prob_of_infect = Vars[[g]][10]# Probability of infection if susceptible (never infected/unvaccinated)
 
 
 # ##Initialization Step##
@@ -425,7 +425,7 @@ for (t in 1:NumTimesteps){
       # if hesitant agent only follows hesitant
         if (in_followers_conf == FALSE & in_followers_hes == TRUE){
           
-            kk = kk_hes
+           # kk = kk_hes
             
             yy <- prob_of_change*(1-kk)
           
@@ -434,7 +434,7 @@ for (t in 1:NumTimesteps){
       # if agent follows both confident and hesitant -> reduced prob of change
           if (in_followers_conf ==TRUE & in_followers_hes == TRUE){
          
-            kk = sum(kk_conf, kk_hes)/2
+            #kk = sum(kk_conf, kk_hes)/2
             
                 yy <- (1-kk/2)*(prob_of_change)
             
@@ -522,9 +522,9 @@ for (t in 1:NumTimesteps){
         
         #Calculating final probability of vaccination for timesteps >15
         #Vaccination for timesteps >15 can vary based on agent disease state
-        if (Individual_matrix[i,j,4] == 0){Comp_prob_of_vacc = (prob_of_vacc*(Prob_of_infect))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}#Completely susceptible
-        if (Individual_matrix[i,j,4] == -1){Comp_prob_of_vacc = (prob_of_vacc*(Infected_Disease_threshold))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}#Recovered (Previously Infected)
-        if (Individual_matrix[i,j,4] == 1){Comp_prob_of_vacc = 0} #Currently infected
+        if (Individual_matrix[i,j,3] == 0){Comp_prob_of_vacc = (prob_of_vacc*(Prob_of_infect))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}#Completely susceptible
+        if (Individual_matrix[i,j,3] == -1){Comp_prob_of_vacc = (prob_of_vacc*(Infected_Disease_threshold))*(prob_of_vacc2)*(1-Vaccinated_Disease_threshold)}#Recovered (Previously Infected)
+        if (Individual_matrix[i,j,3] == 1){Comp_prob_of_vacc = 0} #Currently infected
 
         # Calculation vaccination probability for timestep < 15 (Dampen early vaccination uptake)
         if (t<15){Comp_prob_of_vacc <- Comp_prob_of_vacc*(t/20)}
@@ -621,16 +621,15 @@ for (xx in 1: nrow(Tcontagious)){
   } #end of reassign
  
 
-  ########choose people to swap positions
-    for (move in 1:round(sizei*sizej/10)){
+  #Choose agents to swap positions
+    for (move in 1:round(sizei*sizej/per_move)){
     
     #choose random first person
     choosei1=round(runif(1,1,sizei))
     choosej1=round(runif(1,1,sizej))
     person1=Individual_matrix[choosei1,choosej1,]
 
-    
-    # #choose random second person
+    #choose random second person
     choosei2=round(runif(1,1,sizei))
     choosej2=round(runif(1,1,sizej))
     person2=Individual_matrix[choosei2,choosej2,]
@@ -649,12 +648,11 @@ for (xx in 1: nrow(Tcontagious)){
       Individual_matrix[choosei2,choosej2,]=person1
       
         }
-    }
+    } #if Homophily = 0
   
 #If set to attitude based relocation (non-random swapping)
     if (Homophily==1){# Attitude based Movement: check potential position for matching beliefs, if the neighbors share attituted, likely to switch
       
-    
     #Defining Edge Cases    
       startchoosei1 <- choosei1-1 
         if (startchoosei1 == 0){
@@ -704,6 +702,8 @@ for (xx in 1: nrow(Tcontagious)){
         endchoosej2 <- newendchoosej2
       }
       
+      
+    #Calculate the number of confident individuals around person1 and person2
       SumOfPostitives_person1=Individual_matrix[startchoosei1,startchoosej1,2]+Individual_matrix[startchoosei1,choosej1,2]+Individual_matrix[startchoosei1,endchoosej1,2]+
         Individual_matrix[choosei1,startchoosej1,2]+Individual_matrix[choosei1,endchoosej1,2]+
         Individual_matrix[endchoosei1,startchoosej1,2]+Individual_matrix[endchoosei1,choosej1,2]+Individual_matrix[endchoosei1,endchoosej1,2]
@@ -712,110 +712,52 @@ for (xx in 1: nrow(Tcontagious)){
         Individual_matrix[choosei2,startchoosej2,2]+Individual_matrix[choosei2,endchoosej2,2]+
         Individual_matrix[endchoosei2,startchoosej2,2]+Individual_matrix[endchoosei2,choosej2,2]+Individual_matrix[endchoosei2,endchoosej2,2]
         
-      if (SumOfPostitives_person1 < SumOfPostitives_person2 ){
+      if (SumOfPostitives_person1 < SumOfPostitives_person2 ){#If there are more A+ around person2 than person1
        
-           if (Individual_matrix[choosei1,choosej1, 2]==1 & Individual_matrix[choosei2,choosej2, 2]==0){#modified to include & 4-21-23
+           if (Individual_matrix[choosei1,choosej1, 2]==1 & Individual_matrix[choosei2,choosej2, 2]==0){#...and person1 is A+ while person2 is A-
        
-               Individual_matrix[choosei1,choosej1,]=person2
+               Individual_matrix[choosei1,choosej1,]=person2 #...they swap positions
                Individual_matrix[choosei2,choosej2,]=person1
        
-         collect_conf = collect_conf+1 #collect counting swaps?? (A+)person1 or  A- person2
-         #print(c("h",collect))
            } 
-           #if (Individual_matrix[choosei1,choosej1, 2]==1 & Individual_matrix[choosei2,choosej2, 2]==1){}#"do nothing"added 4-21-23
+           
          }
          
-     if (SumOfPostitives_person1 > SumOfPostitives_person2 ){
+     if (SumOfPostitives_person1 > SumOfPostitives_person2 ){#If there are more A+ around person1 than person2
       
-      if (Individual_matrix[choosei1,choosej1, 2]==0 & Individual_matrix[choosei2,choosej2, 2]==1){
+      if (Individual_matrix[choosei1,choosej1, 2]==0 & Individual_matrix[choosei2,choosej2, 2]==1){#...and person1 is A- while person2 is A+
        
-            Individual_matrix[choosei1,choosej1,]=person2
+            Individual_matrix[choosei1,choosej1,]=person2 #...they swap positions
             Individual_matrix[choosei2,choosej2,]=person1
            
-            collect_hes = collect_hes+1 # collect2(A- swaps)
-            # print(c("f",collect2))
         }
-        #if (Individual_matrix[choosei1,choosej1, 2]==0 & Individual_matrix[choosei2,choosej2, 2]==0){} 
-      
+        
       }
       
     }# If Homophily =1
    
-    #prev_moved[,,] <- c(person1, person2) 
-    
-    }#move swapping 
+       }#move end 
 
-  
+#For plotting-- frequency at each timestep (t)
 Time[t] <-t
-ATT[t] <- sum(Individual_matrix[,,2])/(sizei*sizej) #size^2
+ATT[t] <- sum(Individual_matrix[,,2])/(sizei*sizej)
 VACC[t] <- sum(Individual_matrix[,,1])/(sizei*sizej)
-Disease[t] <- sum(Individual_matrix[,,3][Individual_matrix[,,3]>0])/(sizei*sizej)#sum(Individual_matrix[,,3])/(sizei*sizej)### Edit to leave out recovered
+Disease[t] <- sum(Individual_matrix[,,3][Individual_matrix[,,3]>0])/(sizei*sizej)
 Recovered[t] <- abs(sum(Individual_matrix[,,3][Individual_matrix[,,3]<0]))/(sizei*sizej)
-#print(VACC[t])
 
-#ATT_run[xg] <- ATT
-
-#counting Timesteps to Herd Immunity
-# if (VACC[t] >= 0.7){
+#Determining when "herd immunity" is reached
+#  if (VACC[t] >= .70){
+#      if (VACC[t-1] < .70){
+#        Herd_time <- t
+#        }
+#     }
 # 
-#   # Herd_time[w,t] <- t
-#   # print(VACC[t])
-# 
-#   }
+# if (t == NumTimesteps & VACC[t] < .70){
 #   
- if (VACC[t] >= .70){
-     if (VACC[t-1] < .70){
-       Herd_time <- t
-       #print(c(g,Herd_time))
-      }
- }
-
-if (t == NumTimesteps & VACC[t] < .70){
-  
-  Herd_time <- 'NULL'
-  
-}
-   
-   
-
-
-# for (Individual_matrix[,,4]== 0){}
-# for (Individual_matrix[,,4]== 1){}
-
-#print(collect)
-collect_array[t] <- collect_conf#/(collect+collect2)#(sizei*sizej)#/100 or /sum of total swaps
-collect2_array[t] <- collect_hes#/(collect+collect2)#(sizei*sizej)
-Totalswaps[t] <- collect_conf + collect_hes
-
-# rndmcllctarr_conf[t] <-rndmcollect_conf #Check: Confident who swap
-# rndmcllctarr_hes[t] <- rndmcollect_hes# Hesitant who swap
-# Totrndmcollect[t] <- rndmcollect_conf + rndmcollect_hes #Total swaps
-
-# print(collect_array)
-# print(collect2)
-
- #print(ATT)
-   # print("Positive Attitude")
-   # print(sum(Individual_matrix[,,2])/size^2)# 10000 = size^2 for size = 100
-  # print("Vaccinated")
-  # print(sum(Individual_matrix[,,1])/size^2)
-  #TotalVaccinated[t]=sum(Individual_matrix[,,2])
-  #TotalPositiveBelief[t]=sum(Individual_matrix[,,1])
- 
- #Tally vaccination status and belief status for conformity, neutral, novelty biased individuals separately
- 
-  #}, interval = 1, movie.name = "noveldemo.gif", ani.width = 1000, ani.height = 1000)
-   
- #}
- 
- #print(Individual_matrix[,,1])
-#if (Individual_matrix[,,4] == -1){
-  #vaccsum_novelty[t] <- sum(Individual_matrix[,,1])/(sizei*sizej)#size^2
-  # unvaccsum_novelty[t] <- 1-vaccsum_novelty[t]
-  # print(unvaccsum_novelty[t])
-  #print(vaccsum_novelty[t])
-#print(Individual_matrix[,,3])
-#print(VACC)
+#   Herd_time <- 'NULL'
+#   
+# }
+#    
 
 ##Random person infected every 5 timesteps
 if (t %% 5){
@@ -826,166 +768,79 @@ if (t %% 5){
 
 
 
-}#t
+}#t end
 
-#}} #a, b
 
-#print(c(g,Herd_time))
+# finV <- sum(Individual_matrix[,,1])/(sizei*sizej)
+# finA <- sum(Individual_matrix[,,2])/(sizei*sizej)
+# #addvars[g,] <- c(finV, finA)
+# #addvars[[rn]] <- c(finV, finA)
+# addvars[[g]] <- c(finV, finA)
+# #addvarslist <- rbind(addvarslist, addvars[[rn]])
 
-finV <- sum(Individual_matrix[,,1])/(sizei*sizej)
-finA <- sum(Individual_matrix[,,2])/(sizei*sizej)
-#addvars[g,] <- c(finV, finA)
-#addvars[[rn]] <- c(finV, finA)
-addvars[[g]] <- c(finV, finA)
-#addvarslist <- rbind(addvarslist, addvars[[rn]])
-
+#Collecting the frequencies at each timestep for each simulation run
 ATT_run[run,] <- ATT
-
 VACC_run[run,] <- VACC
 DIS_run[run,] <- Disease
 Recov_run[run,] <- Recovered
 
-
-
-#print(ATT_run)
-
-  } #run 1 : runend
+  } #run end
   
   for (colnum in 1:NumTimesteps){
-    
+  
+    #Calculating the average frequencies at each timestep
     ATT_run_avg[colnum] <- mean(ATT_run[,colnum])
     VACC_run_avg[colnum] <- mean(VACC_run[,colnum])
     DIS_run_avg[colnum] <- mean(DIS_run[,colnum])
     Recov_run_avg[colnum] <- mean(Recov_run[,colnum])
     
-    if (VACC_run_avg[colnum] >= .70){
-      
-      if (VACC_run_avg[colnum-1] < .70){
-        
-        avg_Herd_time <- colnum
-        
-      }else if (colnum == NumTimesteps & VACC_run_avg[colnum] < .70){avg_Herd_time <- 0
-        #print(c(g,Herd_time))
-      }
-    }
-    
-    # if (t == NumTimesteps & VACC[t] < .70){
+    # if (VACC_run_avg[colnum] >= .70){
     #   
-    #   Herd_time <- 'NULL'
-    #   
+    #   if (VACC_run_avg[colnum-1] < .70){
+    #     
+    #     avg_Herd_time <- colnum
+    #     
+    #   }else if (colnum == NumTimesteps & VACC_run_avg[colnum] < .70){avg_Herd_time <- 0
+    #     #print(c(g,Herd_time))
+    #   }
     # }
+    # 
     
   }#colnum
   
-
+#Collecting average vaccination and attitude outputs at simulation end
   matrix_V[aw,bw] <- VACC_run_avg[,NumTimesteps]
   matrix_A[aw,bw] <- ATT_run_avg[,NumTimesteps]
   
-  # print(c(Vector_A[aw], Vector_B[bw]))
-  # print(c(matrix_V[aw,bw],matrix_A[aw,bw]))
   
- }#bw
+    }#bw
  }#aw
   
-###Plots###
 
-# ##Line###
-# #Confidence freq. overtime
-# 
-# #plot(c(0,Time), c(init_tot_conf,ATT),main = c(paste(as.vector(Vars[[g]]),collapse = " "),paste(c(c("H ",Homophily), c("Vars", g), c("HT ", Herd_time)),collapse = " ")),type= "l", col = "blue",lwd = 2, xlim = c(0, NumTimesteps),xlab = "Time", ylim = 0:1, ylab = "Frequency")
-# plot(c(0,Time), c(init_tot_conf,ATT_run_avg),main = c(paste(as.vector(Vars[[g]]),collapse = " "),paste(c(c("H ",Homophily), c("Vars", g), c("HT ", avg_Herd_time)),collapse = " ")),type= "l", col = "blue",lwd = 2, xlim = c(0, NumTimesteps),xlab = "Time", ylim = 0:1, ylab = "Frequency")
-# #title(main = paste(as.vector(Vars[[g]]),collapse = " "),sub = paste(g))
-# axis(side=1, at=seq(0, NumTimesteps, by=10))
-# axis(side=2, at=seq(0, 1, by= 0.10))
-# abline(h = 0.70, v = avg_Herd_time ,col = 'darkgreen', lwd=2, lty=2)
-# #text(90,0.75, "Herd Immunity")
-# #Confidence Freq,
-# #lines(c(0,Time), c(init_tot_conf,ATT), type= "l", col = "blue",lwd = 2)
-# #lines(c(0,Time), c(init_tot_conf,ATT_run_avg), type= "l", col = "blue",lwd = 2)
-# #Vaccination freq. overtime
-# #lines(c(0,Time), c(init_tot_vacc, VACC), type = "l", lwd = 2)
-# lines(c(0,Time), c(init_tot_vacc, VACC_run_avg), type = "l", lwd = 2)
-# #Disease Occurrence
-# #lines(c(0,Time), c(init_tot_infct,Disease), type = "l", col = "red", lwd = 2)
-# lines(c(0,Time), c(init_tot_infct,DIS_run_avg), type = "l", col = "red", lwd = 2)
-# #Recovered
-# #lines(c(0,Time), c(init_tot_recov,Recovered), type = "l", col = "orange", lwd = 2)
-# lines(c(0,Time), c(init_tot_recov,Recov_run_avg), type = "l", col = "orange", lwd = 2)
-# #legend("top", c("Confidence (A+)", "Vaccination (V+)", "Disease (D+)", "Recovered (D-)"), fill = c("blue","black","red", "orange"))
-# #dev.off
-
-
-
-#}#g #run
- 
-  # ATT_run[run,] <- ATT
-
-
-
-######Heatmaps
-#####
-#image(matrix_A, col = colorRampPalette(c("blue", "white", "red"))(100), xlab = "Columns", ylab = "Rows")
-#  pdf(file.path(dir_out_pdf,paste("AvgHeatmap_seed",seed,"g",g,"NumTimesteps",NumTimesteps,"sizei",sizei,"sizej",sizej,"Homophily",Homophily,"runend",runend,".pdf",sep="_")),height=9, width=8.2)#saves file as "noveltest.pdf"
-#  par(mfrow=c(2,2))#), mar=c(2,5,5,2) + 0.1)
+##Heatmaps##
 
 #aw- y label bw x label
   
 my_palette <- colorRampPalette(c("#FFFFFF", "#0000FF")) #Blue
-#my_palette2 <- colorRampPalette(c("#FFFFFF", "#FF0000")) #Red
 my_palette2 <- colorRampPalette(c("#FFFFFF", "#000000")) #Black
 
-#imagePlot(rotate2(matrix_A), col = my_palette(100), zlim=c(0,1), add=TRUE)#cm.colors(256)
-#imagePlot(rotate2(matrix_V), col = my_palette2(100), zlim=c(0,1), add=TRUE)#cm.colors(256)
-
+#Attitude Outputs
 write.csv(matrix_A, paste0(outname, "_A.csv")) #Influ_weight, Influ_A+
 
-image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="kk_conf", xlab="kk_hes")#cm.colors(256)
-#image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="Infl_Reach_A-", xlab="Influ_Reach_A+")#cm.colors(256)
-#image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="Probability of Infection (Susceptible)", xlab="Probability of Infection (Vaccinated)")#cm.colors(256)
-#axis(3, at=seq(0,1, length=length(Vector_A)), labels=colnames(matrix_A), lwd=0, pos=1.15)
+#image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="kk_conf", xlab="kk_hes")#cm.colors(256)
+image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="Probability of Infection (Susceptible)", xlab="Probability of Infection (Vaccinated)")
 image.plot(legend.only=TRUE, col = my_palette(100), zlim=c(0,1), smallplot = c(.945, .965, .22, .82))
 
-# legend(grconvertX(0.5, "device"), grconvertY(1, "device"),
-#        legend = seq(0, 1, 0.1), fill = rev(heat.colors(my_palette2(100))), xpd = NA)
-# legend("topright", legend = seq(0, 1, 0.1), fill = rev(heat.colors(my_palette2(100))), bty = "n", title = "Value")
-
+#Vaccination Outputs
 write.csv(matrix_V, paste0(outname, "_V.csv")) #Probability of Infection (Vaccinated)
 
-image(t(matrix_V), col = my_palette2(100) , zlim=c(0,1), ylab="", xlab="kk_hes" )#cm.colors(256)xlab="Influ_Reach_A+"
-image.plot(legend.only=TRUE, col = my_palette2(100), zlim=c(0,1), smallplot = c(.94, .96, .22, .82))
+image(t(matrix_V), col = my_palette2(100) , zlim=c(0,1), ylab="", xlab="Probability of Infection (Vaccinated)")#cm.colors(256)xlab="Influ_Reach_A+"
+image.plot(legend.only=TRUE, col = my_palette2(100), zlim=c(0,1), smallplot = c(.945, .965, .22, .82))
 
-#legend("topright", legend = seq(0, 1, 0.1), fill = rev(heat.colors(my_palette2(100))), bty = "n", title = "Value")
-#
-#
-
-
-#
 dev.off()
-#dev.off()
-#
-} #xg
+
+} #xg (going through BiasVars)
 
 
-# #
-#
-# ## list file names and read in
-# imgs <- list.files(dir_out, full.names = TRUE)
-# img_list <- lapply(imgs, image_read)
-# 
-# ## join the images together
-# img_joined <- image_join(img_list)
-# 
-# ## animate at 2 frames per second
-# img_animated <- image_animate(img_joined, fps = 4)
-# 
-# ## view animated image
-# img_animated
-# 
-# ## save to disk
-# image_write(image = img_animated,
-#             file.path(dir_out,"novelvax42023.gif")) #path = "novelvax.gif")
-# 
-# #dev.off()
-# # # # #
 
 
