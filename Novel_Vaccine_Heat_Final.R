@@ -35,11 +35,12 @@
 # -- novelty bias (B^-1) = more likely to choose the minority view
 # -- neutral (B^0) = probability of changing mind scales with number of people with a different attitude 
 
+print(R.Version()$version.string)
+
 library(magick)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-#library(gganimate)
 library(corrplot)
 library(fields)
 
@@ -98,7 +99,7 @@ par(mfrow=c(2,2))
       Vaccinated_Disease_threshold <- Vector_B[bw]
     
     # #test_name <- 2 # Hesitancy Influencer (Trait) vs Confident Influencer (Trait)
-       # influencer_hes <- c(0,round(Vector_A[aw]*(sizei*sizej))) #Change one of these numbers
+       # influencer_hes <- c(0,round(Vector_A[aw]*(sizei*sizej)))
        # influencer_conf <- c(1,round(Vector_B[bw]*(sizei*sizej)))
      
     # test_name <- 3
@@ -126,25 +127,14 @@ par(mfrow=c(2,2))
   Recov_run = array(data = 0, dim = c(runend,NumTimesteps))
   Recov_run_avg = array(data = 0, dim = c(1,NumTimesteps))
   
-  #g <- BiasVars[xg]
-  #plot(NA, NA,main = c(paste(as.vector(Vars[[g]]),collapse = " "),paste(c(c("H ",Homophily), c("Vars", g),c("HT ", avg_Herd_time)),collapse = " ")),xlim = c(0, NumTimesteps),xlab = "Time", ylim = 0:1, ylab = "Frequency")
-  
+ 
   # Influencer specifications - set each run
   # c(attitude state, reach from specified parameter list*population size)   
-  influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Change one of these numbers #Does it matter where this is
+  influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej)))
   influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
   
 for (run in 1:runend){
  
-# # Influencer specifications - set each run
-# # c(attitude state, reach from specified parameter list*population size)   
-# influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Change one of these numbers #Does it matter where this is
-# influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
-
-# #Initializing follower array. New followers are chosen each timestep
-# followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
-# followers_hes <- array(data = 0, c(1,2))  
-    
 ATT = array(data = 0)#Attitude;for plotting
 Time = array(data =0)#Time;for plotting
 VACC = array(data =0)#Vacc. Freq;for plotting
@@ -154,15 +144,6 @@ Recovered = array(data =0)#Recovered;for plotting
 Tcontagious = array(data = 0) #
 
 Individual_matrix=array(data=0, dim=c(sizei,sizej,4) )
-
-# #addvars = array(data = 0, dim = c(size[1],2))#collects the final V and A for each line in var matrix
-# addvars <- list()
-# addvarslist <- array(data= 0, dim = c(10,2))
-
-#g <- random_integers[rn] # row number in vars indexed by rn
-  #print(g)
-  
-#for (g in 1:length(Vars)){#varsize #size[1] # #of rows in vars
 
 
 #Parameter assignments and variable initialization
@@ -246,7 +227,7 @@ for (t in 1:NumTimesteps){
 ###Impact of influencer###
    
  #Initializing follower array. New followers are chosen each timestep
- followers_conf <- array(data = 0, c(1,2)) #moved here 6/27/2023
+ followers_conf <- array(data = 0, c(1,2))
  followers_hes <- array(data = 0, c(1,2))
 
   if (influencer_conf[2] == 0){# If the confident influencer has no reach (no followers)
@@ -651,7 +632,7 @@ for (xx in 1: nrow(Tcontagious)){
     } #if Homophily = 0
   
 #If set to attitude based relocation (non-random swapping)
-    if (Homophily==1){# Attitude based Movement: check potential position for matching beliefs, if the neighbors share attituted, likely to switch
+    if (Homophily==1){# Attitude based Movement: check potential position for matching beliefs, if the neighbors share attitudes, likely to switch
       
     #Defining Edge Cases    
       startchoosei1 <- choosei1-1 
@@ -745,20 +726,6 @@ VACC[t] <- sum(Individual_matrix[,,1])/(sizei*sizej)
 Disease[t] <- sum(Individual_matrix[,,3][Individual_matrix[,,3]>0])/(sizei*sizej)
 Recovered[t] <- abs(sum(Individual_matrix[,,3][Individual_matrix[,,3]<0]))/(sizei*sizej)
 
-#Determining when "herd immunity" is reached
-#  if (VACC[t] >= .70){
-#      if (VACC[t-1] < .70){
-#        Herd_time <- t
-#        }
-#     }
-# 
-# if (t == NumTimesteps & VACC[t] < .70){
-#   
-#   Herd_time <- 'NULL'
-#   
-# }
-#    
-
 ##Random person infected every 5 timesteps
 if (t %% 5){
   
@@ -770,13 +737,6 @@ if (t %% 5){
 
 }#t end
 
-
-# finV <- sum(Individual_matrix[,,1])/(sizei*sizej)
-# finA <- sum(Individual_matrix[,,2])/(sizei*sizej)
-# #addvars[g,] <- c(finV, finA)
-# #addvars[[rn]] <- c(finV, finA)
-# addvars[[g]] <- c(finV, finA)
-# #addvarslist <- rbind(addvarslist, addvars[[rn]])
 
 #Collecting the frequencies at each timestep for each simulation run
 ATT_run[run,] <- ATT
@@ -794,17 +754,6 @@ Recov_run[run,] <- Recovered
     DIS_run_avg[colnum] <- mean(DIS_run[,colnum])
     Recov_run_avg[colnum] <- mean(Recov_run[,colnum])
     
-    # if (VACC_run_avg[colnum] >= .70){
-    #   
-    #   if (VACC_run_avg[colnum-1] < .70){
-    #     
-    #     avg_Herd_time <- colnum
-    #     
-    #   }else if (colnum == NumTimesteps & VACC_run_avg[colnum] < .70){avg_Herd_time <- 0
-    #     #print(c(g,Herd_time))
-    #   }
-    # }
-    # 
     
   }#colnum
   
@@ -824,14 +773,14 @@ Recov_run[run,] <- Recovered
 my_palette <- colorRampPalette(c("#FFFFFF", "#0000FF")) #Blue
 my_palette2 <- colorRampPalette(c("#FFFFFF", "#000000")) #Black
 
-#Attitude Outputs
+#Attitude Outputs(Blue)
 write.csv(matrix_A, paste0(outname, "_A.csv")) #Influ_weight, Influ_A+
 
 #image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="kk_conf", xlab="kk_hes")#cm.colors(256)
 image(t(matrix_A), col = my_palette(100), zlim=c(0,1), ylab="Probability of Infection (Susceptible)", xlab="Probability of Infection (Vaccinated)")
 image.plot(legend.only=TRUE, col = my_palette(100), zlim=c(0,1), smallplot = c(.945, .965, .22, .82))
 
-#Vaccination Outputs
+#Vaccination Outputs (Black)
 write.csv(matrix_V, paste0(outname, "_V.csv")) #Probability of Infection (Vaccinated)
 
 image(t(matrix_V), col = my_palette2(100) , zlim=c(0,1), ylab="", xlab="Probability of Infection (Vaccinated)")#cm.colors(256)xlab="Influ_Reach_A+"

@@ -587,7 +587,7 @@ for (xx in 1: nrow(Tcontagious)){
   
     
   #If set to attitude based relocation (non-random swapping)
-    if (Homophily==1){## Attitude based Movement: check potential position for matching beliefs, if the neighbors share attituted, likely to switch
+    if (Homophily==1){## Attitude based Movement: check potential position for matching beliefs, if the neighbors share attitudes, likely to switch
       
   #Defining Edge Cases
       startchoosei1 <- choosei1-1 
