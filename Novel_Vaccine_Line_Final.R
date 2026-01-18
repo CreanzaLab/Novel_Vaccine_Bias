@@ -35,6 +35,7 @@
 # -- novelty bias (B^-1) = more likely to choose the minority view
 # -- neutral (B^0) = probability of changing mind scales with number of people with a different attitude 
 
+print(R.Version()$version.string)
 
 # Loading data and and setting up .pdf.
 
@@ -73,23 +74,18 @@ per_move = 10 #percent of population relocating
 
 runend = 10 #Number of runs
 
-modelvs = array(data = 0, dim = c(length(Vars),3))# Initialized Matrix [Bias distribution ID, abs(difference between the simulated and primary dose vaccination frequencies), abs(simulated and at least one dose vaccination frequencies)]
+modelvs = array(data = 0, dim = c(length(Vars),3))# Initialized Matrix [Bias distribution Index, abs(difference between the simulated and primary dose vaccination frequencies), abs(simulated and at least one dose vaccination frequencies)]
 
 new_ATT_run_avg = array(data = 0, dim = c(length(Vars),23))#Initialized array for collection of every 10 simulated average confidence data points for comparison to CDC data.
 
-diff_new_ATT = array(data = 0, c(length(Vars),2)) #Matrix of [Bias distribution ID, abs(difference between the simulated and CDC vaccine confidence frequencies)]
+diff_new_ATT = array(data = 0, c(length(Vars),2)) #Matrix of [Bias distribution Index, abs(difference between the simulated and CDC vaccine confidence frequencies)]
 
 
 #pdf
-outname <- paste("LinePlots_Final_Homophily=", Homophily, "_Move=", per_move, "(2025)")
+outname <- paste("LinePlots_Final_Homophily=", Homophily, "_Move=", per_move, " date =", Sys.Date())
 #paste("LinePlots_Final_Homophily=0_Move=10(2025)") #paste("Test")
 pdf(file.path(dir_out_pdf,paste0(outname,".pdf")), height=9, width=12)
 par(mfrow=c(2,2))
-
-# dir_out <- file.path()
-# #dir.create(dir_out, recursive = TRUE)
-# dir_out_pdf <- file.path()
-# #dir.create(dir_out_pdf, recursive = TRUE)
 
 
 # Simulation
@@ -98,15 +94,17 @@ for (g in 1:length(Vars)){# Applying each list of parameters varying by bias
   print(g) #used for progress tracking
   
   #Arrays for collecting Confidence, Vaccination, Infected and Recovered frequencies over time per run
+  
+  #Confidence
   ATT_run = array(data = 0, dim = c(runend,NumTimesteps))
   ATT_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-  
+  #Vaccination
   VACC_run = array(data = 0, dim = c(runend,NumTimesteps))
   VACC_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-  
+  #Infected
   DIS_run = array(data = 0, dim = c(runend,NumTimesteps))
   DIS_run_avg = array(data = 0, dim = c(1,NumTimesteps))
-  
+  #Recovered
   Recov_run = array(data = 0, dim = c(runend,NumTimesteps))
   Recov_run_avg = array(data = 0, dim = c(1,NumTimesteps))
   
@@ -118,7 +116,8 @@ influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))#Confident influencer
 
 
 for (run in 1:runend){# Multiple runs used to calculate the average frequencies
-  
+
+#For Plotting 
 ATT = array(data = 0)# Confidence
 Time = array(data =0)# Time
 VACC = array(data =0)# Vaccination Frequency
@@ -141,16 +140,17 @@ Attitude_threshold = Vars[[g]][1]# Confidence Frequency; Vars[g,1]
 Disease_threshold = Vars[[g]][2]#Infected;Vars[g,2]
 Vaccinated_Disease_threshold = Vars[[g]][3]#Infection Probability if vaccinated; Vars[g,3]
 Infected_Disease_threshold = Vars[[g]][4]#Infection probability if previously infected; Vars[g,4]
-CulturalBias <- c(-1, 0 , 1)# novelty, neutral, conform IDs
+CulturalBias <- c(-1, 0 , 1)# (novelty, neutral, conform) IDs
 BiasProb <- c(Vars[[g]][5],Vars[[g]][6],Vars[[g]][7])#Bias Proportions; Vars[g,5], Vars[g,6], Vars[g,7]
 Prob_of_infect = Vars[[g]][10]# Probability of infection if susceptible (never infected/unvaccinated)
 
+#Individual_matrix[i,j,1]=0 since no-one is vaccinated yet
 for (i in 1:sizei){#Going through each agent in the matrix
   for (j in 1:sizej){
     
     #initialize attitude state
     random_number=runif(1)#pick one random number from uniform distribution
-    if (random_number < Attitude_threshold){# if random number < threshold
+    if (random_number < Attitude_threshold){# if the random number < threshold
       Individual_matrix[i,j,2]=1 #Assign positive attitude
       }
     #initialize disease state
@@ -229,7 +229,7 @@ for (t in 1:NumTimesteps){
       
     }## scan end 
    
-  }#if else influencer_conf[2] == 0 
+  }# end if else influencer_conf[2] == 0 
   
   
  # Repeating process for hesitant influencer 
@@ -253,7 +253,7 @@ for (t in 1:NumTimesteps){
     }##scan2 end
     
   }
-    }#if else influencer_hes[2] == 0 
+    }# end if else influencer_hes[2] == 0 
   
   
 ##Attitude Transition## 
@@ -263,7 +263,6 @@ for (t in 1:NumTimesteps){
      #Checks if an agent is a follower of either or both influencers and assigns name
       in_followers_conf <- any((followers_conf[, 1]== i) * (followers_conf[, 2] == j))
       in_followers_hes <- any((followers_hes[, 1]== i) * (followers_hes[, 2] == j))
-      
       
       #tally the A+ attitudes around agent  
       SumOfPostitives=Individual_matrix[starti,startj,2]+Individual_matrix[starti,j,2]+Individual_matrix[starti,endj,2]+
@@ -322,7 +321,7 @@ for (t in 1:NumTimesteps){
             
           }
         
-    #if following no one -> no action
+    #if agent follows neither influencer -> no changes to calculated probability
         if (in_followers_conf == FALSE & in_followers_hes == FALSE){
           
           yy <- prob_of_change
@@ -400,7 +399,7 @@ for (t in 1:NumTimesteps){
   ##Probability that agent[i,j] gets vaccinated##
   ##Based on surrounding infected and vaccinated, attitude and bias
 
-      #Summing the number if infected individuals surrounding an agent
+      #Summing the number of infected individuals surrounding the agent
       infected_list <- c(Individual_matrix[starti,startj,3], Individual_matrix[starti,j,3], Individual_matrix[starti,endj,3],
                          Individual_matrix[i,startj,3], Individual_matrix[i,endj,3], Individual_matrix[endi,startj,3], Individual_matrix[endi,j,3], Individual_matrix[endi,endj,3])
       
@@ -504,7 +503,7 @@ for (i in 1:sizei){
     }#j
   }#i #End of collecting exposed and contagious
   
-  
+#Infecting exposed individuals 
 if (length(exposed[,1])>1){
   
   for (h in 2:length(exposed[,1])){#going through exposed array
@@ -815,3 +814,6 @@ print(c(min(SumBest2[,2]), SumBest2[match(min(SumBest2[,2]),SumBest2[,2]),1]))#p
   }
   
 dev.off()  # Close the PDF
+
+# Session Info            
+sessionInfo()

@@ -75,7 +75,7 @@ print(g) #used for progress tracking
 
 #pdf
 #outname <- paste("815_AvgHtmp_kk_conf_kk_hes",seed,"g2",g, "move", runend, "Homophily", Homophily,sep="_")
-outname <- paste("815_AvgHtmp_Prob_of_infect_Vacc_Dis_thres",seed,"Vars",g, "move", per_move, "Homophily", Homophily,sep="_")
+outname <- paste(Sys.Date(), "AvgHtmp_Prob_of_infect_Vacc_Dis_thres",seed,"Vars",g, "move", per_move, "Homophily", Homophily, sep="_")
 pdf(file.path(dir_out_pdf,paste0(outname,".pdf")),height=9, width=8.2)#saves file as "noveltest.pdf"
 par(mfrow=c(2,2))
 
@@ -130,20 +130,21 @@ par(mfrow=c(2,2))
  
   # Influencer specifications - set each run
   # c(attitude state, reach from specified parameter list*population size)   
-  influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej)))
-  influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej)))
+  influencer_hes <- c(0,round(Vars[[g]][8]*(sizei*sizej))) #Hesitant influencer
+  influencer_conf <- c(1,round(Vars[[g]][9]*(sizei*sizej))) #Confident influencer
   
-for (run in 1:runend){
- 
-ATT = array(data = 0)#Attitude;for plotting
-Time = array(data =0)#Time;for plotting
-VACC = array(data =0)#Vacc. Freq;for plotting
-Disease = array(data =0)#Infected;for plotting
-Recovered = array(data =0)#Recovered;for plotting
+for (run in 1:runend){ # Multiple runs used to calculate the average frequencies
 
-Tcontagious = array(data = 0) #
+#For Plotting 
+ATT = array(data = 0)#Confidence
+Time = array(data =0)#Time
+VACC = array(data =0)#Vaccination Frequency
+Disease = array(data =0)#Infected
+Recovered = array(data =0)#Recovered
 
-Individual_matrix=array(data=0, dim=c(sizei,sizej,4) )
+Tcontagious = array(data = 0) # Collection of contagious individuals
+
+Individual_matrix=array(data=0, dim=c(sizei,sizej,4) ) # Average time to herd immunity
 
 
 #Parameter assignments and variable initialization
@@ -153,23 +154,24 @@ Attitude_threshold = Vars[[g]][1]#Confidence Frequency; Vars[g,1]
 Disease_threshold = Vars[[g]][2]#Infected;Vars[g,2]
 #Vaccinated_Disease_threshold = Vars[[g]][3]#Infection Probability if vaccinated; Vars[g,3]
 Infected_Disease_threshold = Vars[[g]][4]#Infection probability if previously infected; Vars[g,4]
-CulturalBias <- c(-1, 0 , 1) #(novelty, neutral, conform)
+CulturalBias <- c(-1, 0 , 1) #(novelty, neutral, conform) IDs
 BiasProb <- c(Vars[[g]][5],Vars[[g]][6],Vars[[g]][7])#Bias Proportions; Vars[g,5], Vars[g,6], Vars[g,7]
 #Prob_of_infect = Vars[[g]][10]# Probability of infection if susceptible (never infected/unvaccinated)
 
 
 # ##Initialization Step##
 
-#keep Individual_matrix[i,j,1]=0 because nobody is vaccinated yet
+#Individual_matrix[i,j,1]=0 since no-one is vaccinated yet
 for (i in 1:sizei){#go through each agent in the matrix
   for (j in 1:sizej){
     #print(i, j) #for tracking
     
     #initialize attitude state
     random_number=runif(1)#pick one random number from uniform distribution
-    if (random_number < Attitude_threshold){# if above number < threshold
+    if (random_number < Attitude_threshold){# if the random number < threshold
       Individual_matrix[i,j,2]=1 #Assign positive attitude
-      }
+    }
+    
     #initialize disease state
     random_number2=runif(1)
     if (random_number2 < Disease_threshold){
@@ -192,17 +194,18 @@ init_tot_recov = abs(sum(Individual_matrix[,,3][Individual_matrix[,,3]<0]))/(siz
 ## Edge Adjustment such that agents on the edge of the matrix have neighbors on all sides ##
 starti <- i-1 #assigning name to possible "0" index
 if (starti == 0){
-  newstarti = sizei#currently name of matrix length
+  newstarti = sizei #current name of matrix length
   starti <- newstarti #starti is now end value instead of 0
 }
 
-endi <- i+1 #end: #assigning name to possible "end+1" index
+endi <- i+1 #assigning name to possible "end+1" index
 if (endi == sizei+1){#"end" +1; when
   newendi = 1 #back to beginning index
-  endi <- newendi
+  endi <- newendi #endi + 1 value is now 1
 }
 
-startj <- j-1 #Same done for j
+#Same for for j index
+startj <- j-1
 if (startj == 0){
   newstartj = sizej
   startj <- newstartj
@@ -259,7 +262,7 @@ for (t in 1:NumTimesteps){
  # Repeating process for hesitant influencer 
  if (influencer_hes[2] == 0){# If influencer has no reach, keep array empty
       followers_hes <- array(data = 0, c(1,2))
-    }else{
+    }else{ #else  create list of followers
   
     for (scan2 in 1:influencer_hes[2]){#Creates list of influencer_hes followers
 
@@ -289,7 +292,6 @@ for (t in 1:NumTimesteps){
        in_followers_conf <- any((followers_conf[, 1]== i) * (followers_conf[, 2] == j))
        in_followers_hes <- any((followers_hes[, 1]== i) * (followers_hes[, 2] == j))
   
-  
        #tally the A+ attitudes around agent  
         SumOfPostitives=Individual_matrix[starti,startj,2]+Individual_matrix[starti,j,2]+Individual_matrix[starti,endj,2]+
         Individual_matrix[i,startj,2]+Individual_matrix[i,endj,2]+
@@ -297,7 +299,7 @@ for (t in 1:NumTimesteps){
  
       #Bias determines attitude transition probability equation  
       #Cultural Bias index used to assign prob_of_change eqn
-      #Cultural Bias (-1, 0, 1); k = 1, 2 or 3
+      #Cultural Bias (-1, 0, 1) --> index: k = (1, 2, 3)
       k = match(Individual_matrix[i,j,4], CulturalBias)
      
       kk = 0.14  #Weight of Influencer effects
@@ -330,7 +332,7 @@ for (t in 1:NumTimesteps){
       #If confident and only following confident --> reduce probability of change by kk
           if (in_followers_conf ==TRUE & in_followers_hes == FALSE){
             
-            #kk = kk_conf
+            #kk = kk_conf #test_name <- 4
             
             yy <- prob_of_change*(1-kk)
               
@@ -440,7 +442,7 @@ for (t in 1:NumTimesteps){
 ###Probability that agent[i,j] gets vaccinated###
 ##Based on surrounding infected and vaccinated, attitude and bias
  
-      #Summing the number if infected individuals surrounding an agent
+      #Summing the number of infected individuals surrounding the agent
       infected_list <- c(Individual_matrix[starti,startj,3], Individual_matrix[starti,j,3], Individual_matrix[starti,endj,3],
                         Individual_matrix[i,startj,3], Individual_matrix[i,endj,3], Individual_matrix[endi,startj,3], Individual_matrix[endi,j,3], Individual_matrix[endi,endj,3])
       
@@ -548,7 +550,8 @@ for (i in 1:sizei){
       }
     }#j
   }#i #End of collecting exposed and contagious
-  
+
+#Infecting exposed individuals  
 if (length(exposed[,1])>1){
   
   for (h in 2:length(exposed[,1])){#going through exposed
@@ -578,7 +581,7 @@ if (length(exposed[,1])>1){
     Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
   }
   
-  #if vaccinated and susceptible
+  #if vaccinated and completely susceptible
   if (Individual_matrix[exposed[h,1],exposed[h,2],3]==0 & random_number2 < Vaccinated_Disease_threshold){
    
     Individual_matrix[exposed[h,1],exposed[h,2],3]=1 #then infect
@@ -790,6 +793,7 @@ dev.off()
 
 } #xg (going through BiasVars)
 
-
+# Session Info            
+sessionInfo()
 
 
