@@ -284,7 +284,7 @@ for (t in 1:NumTimesteps){
         }#if else influencer_hes[2] == 0 
  
   
-##Attitude Transition## 
+###ATTITUDE TRANSITION### 
   for (i in 1:sizei){
     for (j in 1:sizej){
       

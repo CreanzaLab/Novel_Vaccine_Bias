@@ -69,7 +69,7 @@ NumTimesteps = 100 #Number of timesteps
 sizei <-40
 sizej <-25
 
-Homophily <- 0 #==1 if attitude homophily biases movements; 0 if random movements
+Homophily <- 1 #==1 if attitude homophily biases movements; 0 if random movements
 per_move = 10 #percent of population relocating
 
 runend = 10 #Number of runs
@@ -256,7 +256,8 @@ for (t in 1:NumTimesteps){
     }# end if else influencer_hes[2] == 0 
   
   
-##Attitude Transition## 
+###ATTITUDE TRANSITION###
+ 
   for (i in 1:sizei){
     for (j in 1:sizej){
       
@@ -783,7 +784,7 @@ print(c(min(diff_new_ATT[,2]), diff_new_ATT[match(min(diff_new_ATT[,2]),diff_new
 
 ### To Optimize for at least one dose and confidence
 Bestfits <- cbind(modelvs,diff_new_ATT[,2])
-
+SumBest = array(data = 0)
 for (ff in 1:length(Vars)){
 
   SumBest[ff] <- sum(Bestfits[ff, 2:4]) #Summing the at least one dose and confidence differences

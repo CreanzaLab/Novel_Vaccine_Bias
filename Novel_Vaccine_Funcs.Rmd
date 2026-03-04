@@ -21,6 +21,8 @@ SumOfInfected = c(0:8)
 SumOfVaccinated = c(0:8)
 ```
 
+*Line numbers subject to change*
+
 ## Vaccination Probabilities (Line 401)
 
 ### Functions for vaccination probability based on surrounding vaccinated individuals (V+) (Starting Line 422 and 444)
