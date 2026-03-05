@@ -10,7 +10,11 @@ output:
 Created from organization of "NovelVaccineFuns_B.R"
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+  dev = c("png", "pdf"), # Render for the doc AND save as PDF
+  fig.path = "NovelVaccineOutPdf/" # Optional: Saves them in a specific folder
+)
 ```
 
 ### Input ranges
@@ -27,6 +31,7 @@ SumOfVaccinated = c(0:8)
 
 ### Functions for vaccination probability based on surrounding vaccinated individuals (V+) (Starting Line 422 and 444)
 ```{r}
+
 #(Starting Line 422)
 #Prob. of vaccinating if confident (A+) but hold novelty (B-) bias
 topnov = 0.99 - 0.5/(1+ exp(-13*((SumOfVaccinated/8)-0.5))) #A+ Prob of vacc Nov
@@ -46,7 +51,8 @@ neut_hes_vacc = 0.05*(SumOfVaccinated) + 0.05 #0.003125*(SumOfVaccinated)^2 + 0.
 ```
 
 ### Vaccination by Vaccination Plots
-```{r, echo=FALSE}
+```{r Vaccination by Surrounding Vaccinated, echo=FALSE}
+
 plot(SumOfVaccinated, topnov, type = "o", col = "red",lwd=2, ylim = 0:1, xlab="Number of Surrounding Vaccinated (V+)", ylab = "Vaccination Probability")#A+
 lines(SumOfVaccinated, botnov, type = "o", col = "red", lty=2, lwd=2)
 lines(SumOfVaccinated, neut_conf_vacc, type = "o", lwd=2)
@@ -67,7 +73,7 @@ pn3 = (1.2 - exp(-0.35* SumOfInfected))/2 + 0.1
 ```
 
 ### Vaccination by Infected Plots
-```{r, echo=FALSE}
+```{r Vaccination by Infected, echo=FALSE}
 plot(SumOfInfected, pm3, type = "o", col = "black", lwd=2, ylim = 0:1, xlab="Number of Surrounding Infected (D+)", ylab = "Vaccination Probability")#A+
 lines(SumOfInfected, pn3, type = "o", col = "green", lwd=2)#A-
 legend("topleft", c("A+", "A-"), fill = c("black", "green"))
@@ -90,7 +96,7 @@ pz3 = 0.99 - 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
 
 ```
 ### Transition if Confident Plot
-```{r}
+```{r Transition if Confident, echo=FALSE}
 plot(SumOfPostitives, px3, type= "o", col = "red",lwd=2, ylim = 0:1,xlab = "Number of Surrounding Confident (A+)", ylab = "Prob. of Att. Trans. to Hesit. (A+ --> A-)")#novelty
 lines(SumOfVaccinated, neut_conf_transb, type = "o", lwd=2)#neutral 8/14 poly
 lines(SumOfPostitives, pz3, type = "o", col = "blue", lwd=2)#conform
@@ -113,7 +119,7 @@ pr3 = 0.002 + 0.99/(1+ exp(-13*((SumOfPostitives/8)-0.5)))
 ```
 
 ### Transition if Hesitant Plot
-```{r}
+```{r Transition if Hesitant, echo=FALSE}
 
 plot(SumOfPostitives, pz3, type= "o", col = "red",lwd=2, ylim = 0:1, xlab = "Number of Surrounding Confident (A+)", ylab = "Prob. of Att. Trans to Conf. (A- --> A+)")
 lines(SumOfPostitives, neut_hes_transb, type = "o", lwd=2)#neutral 8/14 poly
@@ -124,8 +130,8 @@ legend("top", c("Conform", "Neutral", "Novelty"), fill = c("blue","black", "red"
 
 
 #### Influencer Effects (Line Plot Line 304, 362)
-
-```{r}
+## If Hesitant..
+```{r If Hesitant}
 prob_of_change <- seq(0,1, 0.1)
 kk = 0.14
 
@@ -153,7 +159,9 @@ yh3 = (1-kk/2)*prob_of_change #(*** Essentially the same. Also no need for 0 con
 
   # OR Prob of change increases, but not as much as if only following confident
 yh3b = kk/2 + (1-kk/2)*prob_of_change
+```
 
+```{r Influencer Effects if Hesitant, echo =FALSE}
 plot(prob_of_change, yh1, type = "o", lwd=2, ylim = 0:1, xlab = "Attitude Transition Probability if Hesitant (A- --> A+)", ylab = "Probability after Influencer Effects")
 lines(prob_of_change, yh2, type = "o", lwd=2, col = "blue")
 lines(prob_of_change, yh3, type = "o", lwd=2, col = "red")
@@ -161,6 +169,11 @@ lines(prob_of_change, yh3b, lty = 2, lwd=2, col = "red")
 title("If Agent is Hesitant...")
 legend("top", c("Following Confident", "Following Hesitant", "Following Both", "Following Both_b"), lty = c(1,1,1,2), col = c("black","blue", "red", "red"))
 
+```
+
+#### Influencer Effects (Line Plot Line 304, 362)
+## If Confident..
+```{r}
 
 ## (Line 306)
 #If confident and only following confident --> reduce probability of change by kk
@@ -186,7 +199,9 @@ yc3 = (1-kk/2)*prob_of_change #(*** Essentially the same. Also no need for 0 con
 
     #OR Prob of change increases, but not as much as if only following hesitant
 yc3b = kk/2 + (1-kk/2)*prob_of_change
+```
 
+```{r, Influencer Effects if Confident, echo =FALSE}
 
 plot(prob_of_change, yc1, type = "o", lwd=2, ylim = 0:1, xlab = "Attitude Transition Probability if Confident (A+ --> A-)", ylab = "Probability after Influencer Effects")
 lines(prob_of_change, yc2, type = "o", lwd=2, col = "blue")
